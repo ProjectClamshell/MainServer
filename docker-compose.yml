@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: postgres_db
+    environment:
+      POSTGRES_DB: clamshell
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  tcp_server:
+    build: .
+    container_name: tcp_server
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      POSTGRES_DB: clamshell
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    ports:
+      - "5000:5000"
+
+volumes:
+  pgdata:
