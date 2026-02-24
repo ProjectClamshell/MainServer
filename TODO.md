@@ -5,7 +5,7 @@ Docker stuff
     - Make sure they can connect
 
 Database stuff
-    - create fields
+    - create table + design
     - add encryption protocol
 
 API stuff

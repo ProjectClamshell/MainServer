@@ -1,5 +1,7 @@
 using Npgsql;
 using Dapper;
+using System.Text;
+using System.Runtime.CompilerServices;
 
 public class Database
 {
@@ -14,9 +16,21 @@ public class Database
         );
     }
 
-    public async Task<IEnumerable<Message>> GetMessagesAsync()
+    public async Task<IEnumerable<Message>> GetTotalMessagesAsync()
     {
         await using var connection = new NpgsqlConnection(_connectionString);
         return await connection.QueryAsync<Message>("SELECT * FROM messages");
     }
+
+    public async Task<IEnumerable<Message>> GetSignedMessagesAsync()
+    {
+    }
+
+    public async Task<IEnumerable<Message>> GetUnSignedMessagesAsync()
+    {
+    }
+
+    static string DecryptMessage()
+    {
+    }    
 }
