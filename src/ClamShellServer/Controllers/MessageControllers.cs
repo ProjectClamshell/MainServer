@@ -6,6 +6,9 @@ public class MessagesController : ControllerBase
 {
     private readonly Database _db = new Database();
 
+    [HttpGet("new")]
+    public async Task<IActionResult> GetNewMessagesAsync() { }
+
     [HttpGet("total")]
     public async Task<IActionResult> GetTotal() { }
 
