@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "f7IeDl1uN8wHXN5+E3AV6R2vAAeByhiUvXejogN9QM0=",
+  "Source": "ClamShellServer",
+  "BasePath": "_content/ClamShellServer",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

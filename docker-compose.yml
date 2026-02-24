@@ -4,8 +4,8 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - ConnectionStrings__PostgreSQL=Host=postgres;Port=5432;Database=tcpapi;Username=postgres;Password=yourpassword
-      - TcpServer__Port=5000
+      - ConnectionStrings__PostgreSQL=Host=postgres;Port=5432;Database=clamshell;Username=postgres;Password=yourpassword
+      - ASPNETCORE_URLS=http://+:5000
     depends_on:
       postgres:
         condition: service_healthy
@@ -14,9 +14,9 @@ services:
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: tcpapi
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: yourpassword
+      - POSTGRES_DB=clamshell
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=yourpassword
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
