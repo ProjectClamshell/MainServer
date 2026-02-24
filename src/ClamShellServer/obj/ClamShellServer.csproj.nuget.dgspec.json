@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/james/Documents/MainServer/TcpServer/TcpServer.csproj": {}
+    "/home/james/Documents/MainServer/src/ClamShellServer/ClamShellServer.csproj": {}
   },
   "projects": {
-    "/home/james/Documents/MainServer/TcpServer/TcpServer.csproj": {
+    "/home/james/Documents/MainServer/src/ClamShellServer/ClamShellServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/james/Documents/MainServer/TcpServer/TcpServer.csproj",
-        "projectName": "TcpServer",
-        "projectPath": "/home/james/Documents/MainServer/TcpServer/TcpServer.csproj",
+        "projectUniqueName": "/home/james/Documents/MainServer/src/ClamShellServer/ClamShellServer.csproj",
+        "projectName": "ClamShellServer",
+        "projectPath": "/home/james/Documents/MainServer/src/ClamShellServer/ClamShellServer.csproj",
         "packagesPath": "/home/james/.nuget/packages/",
-        "outputPath": "/home/james/Documents/MainServer/TcpServer/obj/",
+        "outputPath": "/home/james/Documents/MainServer/src/ClamShellServer/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/james/.nuget/NuGet/NuGet.Config"
@@ -43,9 +43,21 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Dapper": {
+              "target": "Package",
+              "version": "[2.1.66, )"
+            },
+            "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[8.0.24, )"
+            },
             "Npgsql": {
               "target": "Package",
-              "version": "[8.0.3, )"
+              "version": "[10.0.1, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.6.2, )"
             }
           },
           "imports": [
@@ -60,6 +72,9 @@
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }

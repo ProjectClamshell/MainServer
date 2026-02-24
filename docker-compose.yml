@@ -1,31 +1,29 @@
-version: "3.9"
-
 services:
-  db:
-    image: postgres:16
-    container_name: postgres_db
-    environment:
-      POSTGRES_DB: clamshell
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: pass
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
-    ports:
-      - "5432:5432"
-
-  tcp_server:
+  tcpapi:
     build: .
-    container_name: tcp_server
-    depends_on:
-      - db
-    environment:
-      DB_HOST: db
-      POSTGRES_DB: clamshell
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: pass
     ports:
       - "5000:5000"
+    environment:
+      - ConnectionStrings__PostgreSQL=Host=postgres;Port=5432;Database=tcpapi;Username=postgres;Password=yourpassword
+      - TcpServer__Port=5000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: tcpapi
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: yourpassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
-  pgdata:
+  postgres_data:

@@ -1,8 +1,0 @@
-CREATE TYPE state_enum AS ENUM ('SIGNED', 'UNSIGNED', 'CORRUPTED');
-
-CREATE TABLE IF NOT EXISTS state_values (
-    id      BIGSERIAL PRIMARY KEY,
-    state   state_enum NOT NULL,
-    value   DOUBLE PRECISION NOT NULL,
-    time    TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
