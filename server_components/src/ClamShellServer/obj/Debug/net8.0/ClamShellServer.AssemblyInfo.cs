@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ClamShellServer")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cf4869286a3e2da95073c6c78c297eebd75f16d6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1c304d2132038ecfd9b05b1adac58c492fccd50b")]
 [assembly: System.Reflection.AssemblyProductAttribute("ClamShellServer")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ClamShellServer")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
