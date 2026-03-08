@@ -8,16 +8,13 @@ public class Database
     public async Task SaveMessageAsync(string content)
     {
         await using var connection = new NpgsqlConnection(_connectionString);
-        await connection.ExecuteAsync(
-            "INSERT INTO messages (content, received_at) VALUES (@content, @now)",
-            new { content, now = DateTime.UtcNow }
-        );
+        await connection.ExecuteAsync("INSERT INTO messages (content, received_at) VALUES (@content, @now)", new { content, now = DateTime.UtcNow });
     }
 
     public async Task<IEnumerable<Message>> GetNewMessagesAsync()
     {
         await using var connection = new NpgsqlConnection(_connectionString);
-        return await connection.QueryAsync<Message>("SELECT * FROM messages WHERE received_at >= NOW() - INTERVAL '5 minutes';");
+        return await connection.QueryAsync<Message>("SELECT * FROM messages WHERE received_at >= NOW() - INTERVAL '5 seconds';");
     }
 
     public async Task<IEnumerable<int>> GetTotalMessagesAsync()
@@ -37,9 +34,4 @@ public class Database
         await using var connection = new NpgsqlConnection(_connectionString);
         return await connection.QueryAsync<int>("SELECT count(*) FROM messages where signed=False");
     }
-
-    static string DecryptMessage()
-    {
-        return string.Empty; // implement later
-    } 
 }

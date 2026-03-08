@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "nQVchPVA1pY=",
+  "dgSpecHash": "Eo0EIk6zt6I=",
   "success": true,
-  "projectFilePath": "/home/james/Documents/MainServer/src/ClamShellServer/ClamShellServer.csproj",
+  "projectFilePath": "/home/james/Documents/MainServer/server_components/src/ClamShellServer/ClamShellServer.csproj",
   "expectedPackageFiles": [
     "/home/james/.nuget/packages/dapper/2.1.66/dapper.2.1.66.nupkg.sha512",
     "/home/james/.nuget/packages/microsoft.aspnetcore.openapi/8.0.24/microsoft.aspnetcore.openapi.8.0.24.nupkg.sha512",
