@@ -1,2 +1,2 @@
-./server_components/src/ClamShellServer/obj/
-./server_components/src/ClamShellServer/bin/
+bin/
+obj/
