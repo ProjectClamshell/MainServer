@@ -34,6 +34,13 @@ public class MessagesController : ControllerBase
         return Ok(unsigned_messages);
     }
 
+    [HttpGet("Reset")] //for testing only
+    public async Task<IActionResult> ResetTable()
+    {
+        var reset_table = await _db.ResetTableAsync();
+        return Ok(reset_table);
+    }
+
     [HttpPost]
     public async Task<IActionResult> SaveNewMessage([FromBody] string content, bool signed)
     {
