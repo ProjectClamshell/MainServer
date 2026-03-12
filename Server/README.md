@@ -102,3 +102,12 @@ curl -X POST http://localhost:5000/api/messages \
 - All responses return HTTP `200 OK` on success.
 - `received_at` is set automatically to the current UTC time on insert.
 - `signed` defaults to `false` on insert.
+
+## Structure ##
+
+Currently the main file should run the api and receiver
+
+the api reads from the database, pretty much it
+
+the receiver handles connections, decrypts the message, and stores it (not using api calls)
+I pray that this works

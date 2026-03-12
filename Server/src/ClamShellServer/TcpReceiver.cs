@@ -43,8 +43,7 @@ public class TcpListenerService : BackgroundService
             try
             {
                 var client = await listener.AcceptTcpClientAsync(stoppingToken);
-                _ = HandleClientAsync(client, stoppingToken).ContinueWith(t =>
-                    Console.Error.WriteLine(t.Exception), TaskContinuationOptions.OnlyOnFaulted);
+                _ = HandleClientAsync(client, stoppingToken).ContinueWith(t => Console.Error.WriteLine(t.Exception), TaskContinuationOptions.OnlyOnFaulted);
             }
             catch (OperationCanceledException)
             {
@@ -55,7 +54,7 @@ public class TcpListenerService : BackgroundService
         listener.Stop();
     }
 
-    private async Task HandleClientAsync(TcpClient client, CancellationToken ct)
+    private async Task HandleClientAsync(TcpClient client, CancellationToken ct) //probably need to change this
     {
         using (client)
         {
@@ -65,7 +64,8 @@ public class TcpListenerService : BackgroundService
             var buffer = new byte[4096];
             int bytesRead = await stream.ReadAsync(buffer, ct);
             var data = buffer[..bytesRead];
-            // decrypt + process here
+            char[] DecryptedData = Decryptor.decrypt(data);
+            _db.SaveMessageAsync(new string(DecryptedData));
         }
     }
 
