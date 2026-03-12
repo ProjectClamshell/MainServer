@@ -70,14 +70,17 @@ public class TcpListenerService : BackgroundService
             var buffer = new byte[4096];
             int bytesRead = await stream.ReadAsync(buffer, ct);
             var data = buffer[..bytesRead];
-            //char[] decryptedData = Decryptor.decrypt(data);
-            char[] decryptedData = Encoding.UTF8.GetString(data).ToCharArray();
-            char[] pgn = decryptedData.AsSpan(0, 3).ToArray();
-            char[] payload = decryptedData.AsSpan(3).ToArray();
-            Console.WriteLine("Message received");
-            Console.WriteLine($"PGN: {new string(pgn)}");
-            Console.WriteLine($"Payload: {new string(payload)}");
-            await _db.SaveMessageAsync(new string(payload), false);
+
+            while ((bytesRead = await stream.ReadAsync(buffer, ct)) > 0)
+            {
+                char[] decryptedData = Decryptor.decrypt(data);
+                char[] pgn = decryptedData.AsSpan(0, 3).ToArray();
+                char[] payload = decryptedData.AsSpan(3).ToArray();
+                Console.WriteLine("Message received");
+                Console.WriteLine($"PGN: {new string(pgn)}");
+                Console.WriteLine($"Payload: {new string(payload)}");
+                await _db.SaveMessageAsync(new string(payload), false);
+            }
         }
     }
 

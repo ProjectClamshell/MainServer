@@ -35,10 +35,10 @@ public class Database
         return await connection.QueryAsync<int>("SELECT count(*) FROM messages where signed = False");
     }
 
-    public async Task<IEnumerable<int>> ResetTableAsync()
+    public async Task<int> ResetTableAsync()
     {
         await using var connection = new NpgsqlConnection(_connectionString);
-        await connection.QueryAsync<int>("TRUNCATE TABLE messages;");
-        return 0;
+        await connection.ExecuteAsync("TRUNCATE TABLE messages;");
+        return 0; // Now matches Task<int>
     }
 }
