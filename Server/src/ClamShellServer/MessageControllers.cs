@@ -35,9 +35,9 @@ public class MessagesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> SaveNewMessage([FromBody] string content)
+    public async Task<IActionResult> SaveNewMessage([FromBody] string content, bool signed)
     {
-        await _db.SaveMessageAsync(content);
+        await _db.SaveMessageAsync(content, signed);
         return Ok("saved");
     }
 }

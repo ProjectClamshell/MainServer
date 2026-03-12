@@ -5,10 +5,10 @@ public class Database
 {  
     private readonly string _connectionString = "Host=postgres;Database=clamshell;Username=postgres;Password=yourpassword";
 
-    public async Task SaveMessageAsync(string content)
+    public async Task SaveMessageAsync(string content, bool signed)
     {
         await using var connection = new NpgsqlConnection(_connectionString);
-        await connection.ExecuteAsync("INSERT INTO messages (content, received_at) VALUES (@content, @now)", new { content, now = DateTime.UtcNow });
+        await connection.ExecuteAsync("INSERT INTO messages (content, received_at, signed) VALUES (@content, @now, @signed)", new { content, now = DateTime.UtcNow, signed});
     }
 
     public async Task<IEnumerable<Message>> GetNewMessagesAsync()
@@ -26,12 +26,12 @@ public class Database
     public async Task<IEnumerable<int>> GetSignedMessagesAsync()
     {
         await using var connection = new NpgsqlConnection(_connectionString);
-        return await connection.QueryAsync<int>("SELECT count(*) FROM messages where signed=True");
+        return await connection.QueryAsync<int>("SELECT count(*) FROM messages where signed = True");
     }
 
     public async Task<IEnumerable<int>> GetUnSignedMessagesAsync()
     {
         await using var connection = new NpgsqlConnection(_connectionString);
-        return await connection.QueryAsync<int>("SELECT count(*) FROM messages where signed=False");
+        return await connection.QueryAsync<int>("SELECT count(*) FROM messages where signed = False");
     }
 }

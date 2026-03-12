@@ -1,3 +1,4 @@
+using System.Text;
 using System.Net;
 using System.Net.Sockets;
 
@@ -37,13 +38,18 @@ public class TcpListenerService : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         listener.Start();
+        Console.WriteLine($"TCP listener started on {cfg.host}:{cfg.port}");
 
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
                 var client = await listener.AcceptTcpClientAsync(stoppingToken);
-                _ = HandleClientAsync(client, stoppingToken).ContinueWith(t => Console.Error.WriteLine(t.Exception), TaskContinuationOptions.OnlyOnFaulted);
+                Console.WriteLine("Client connected");
+
+                _ = HandleClientAsync(client, stoppingToken)
+                    .ContinueWith(t => Console.Error.WriteLine(t.Exception),
+                    TaskContinuationOptions.OnlyOnFaulted);
             }
             catch (OperationCanceledException)
             {
@@ -54,7 +60,7 @@ public class TcpListenerService : BackgroundService
         listener.Stop();
     }
 
-    private async Task HandleClientAsync(TcpClient client, CancellationToken ct) //probably need to change this
+    private async Task HandleClientAsync(TcpClient client, CancellationToken ct) //probably need to change this, add support for different kinds of messages
     {
         using (client)
         {
@@ -64,8 +70,14 @@ public class TcpListenerService : BackgroundService
             var buffer = new byte[4096];
             int bytesRead = await stream.ReadAsync(buffer, ct);
             var data = buffer[..bytesRead];
-            char[] DecryptedData = Decryptor.decrypt(data);
-            _db.SaveMessageAsync(new string(DecryptedData));
+            //char[] decryptedData = Decryptor.decrypt(data);
+            char[] decryptedData = Encoding.UTF8.GetString(data).ToCharArray();
+            char[] pgn = decryptedData.AsSpan(0, 3).ToArray();
+            char[] payload = decryptedData.AsSpan(3).ToArray();
+            Console.WriteLine("Message received");
+            Console.WriteLine($"PGN: {new string(pgn)}");
+            Console.WriteLine($"Payload: {new string(payload)}");
+            await _db.SaveMessageAsync(new string(payload), false);
         }
     }
 
