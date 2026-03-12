@@ -2,7 +2,7 @@ using Npgsql;
 using Dapper;
 
 public class Database
-{
+{  
     private readonly string _connectionString = "Host=postgres;Database=clamshell;Username=postgres;Password=yourpassword";
 
     public async Task SaveMessageAsync(string content)
