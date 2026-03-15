@@ -1,8 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
 
+public interface IMessagesApi
+{
+    Task<IActionResult> GetNewMessagesAsync();
+    Task<IActionResult> GetTotal();
+    Task<IActionResult> GetSigned();
+    Task<IActionResult> GetUnSigned();
+    Task<IActionResult> ResetTable();
+}
+
 [ApiController]
 [Route("api/[controller]")]
-public class MessagesController : ControllerBase
+public class MessagesController : ControllerBase, IMessagesApi
 {
     private readonly Database _db = new Database();
 
@@ -39,12 +48,5 @@ public class MessagesController : ControllerBase
     {
         var reset_table = await _db.ResetTableAsync();
         return Ok(reset_table);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> SaveNewMessage([FromBody] string content, bool signed)
-    {
-        await _db.SaveMessageAsync(content, signed);
-        return Ok("saved");
     }
 }

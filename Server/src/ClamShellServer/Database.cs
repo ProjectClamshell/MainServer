@@ -1,9 +1,21 @@
 using Npgsql;
 using Dapper;
 
-public class Database
+public interface DatabaseConnection
+{
+    private readonly string _connectionString;
+    Task SaveMessageAsync();
+    Task<IEnumerable<Message>> GetNewMessagesAsync();
+    Task<IEnumerable<int>> GetTotalMessagesAsync();
+    Task<IEnumerable<int>> GetSignedMessagesAsync();
+    Task<IEnumerable<int>> GetUnSignedMessagesAsync();
+    Task<int> ResetTableAsync();
+
+}
+
+public class Database : DatabaseConnection
 {  
-    private readonly string _connectionString = "Host=postgres;Database=clamshell;Username=postgres;Password=yourpassword";
+    private readonly string _connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__PostgreSQL") ?? "Host=postgres;Database=clamshell;Username=postgres;Password=yourpassword"; //defualt database creds
 
     public async Task SaveMessageAsync(string content, bool signed)
     {
@@ -39,6 +51,6 @@ public class Database
     {
         await using var connection = new NpgsqlConnection(_connectionString);
         await connection.ExecuteAsync("TRUNCATE TABLE messages;");
-        return 0; // Now matches Task<int>
+        return 0;
     }
 }
