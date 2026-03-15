@@ -2,8 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 
 public interface IMessagesApi
 {
-    Task<IActionResult> GetNewMessagesAsync();
+    Task<IActionResult> GetNew();
     Task<IActionResult> GetTotal();
+    Task<IActionResult> GetAll();
     Task<IActionResult> GetSigned();
     Task<IActionResult> GetUnSigned();
     Task<IActionResult> ResetTable();
@@ -16,9 +17,16 @@ public class MessagesController : ControllerBase, IMessagesApi
     private readonly Database _db = new Database();
 
     [HttpGet("new")]
-    public async Task<IActionResult> GetNewMessagesAsync()
+    public async Task<IActionResult> GetNew()
     {
         var new_messages = await _db.GetNewMessagesAsync();
+        return Ok(new_messages);
+    }
+
+    [HttpGet("all")]
+    public async Task<IActionResult> GetAll()
+    {
+        var new_messages = await _db.GetAllMessagesAsync();
         return Ok(new_messages);
     }
 

@@ -2,7 +2,6 @@ using Sodium;
 
 interface IDecryption
 {
-    private readonly byte[] key, nonce;
     public byte[] decrypt(byte[] data);
 }
 

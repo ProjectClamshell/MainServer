@@ -3,24 +3,23 @@ using Dapper;
 
 public interface DatabaseConnection
 {
-    private readonly string _connectionString;
-    Task SaveMessageAsync();
     Task<IEnumerable<Message>> GetNewMessagesAsync();
+    Task<IEnumerable<Message>> GetAllMessagesAsync();
     Task<IEnumerable<int>> GetTotalMessagesAsync();
     Task<IEnumerable<int>> GetSignedMessagesAsync();
     Task<IEnumerable<int>> GetUnSignedMessagesAsync();
     Task<int> ResetTableAsync();
-
+    Task SaveMessageAsync(string content, bool signed);
 }
 
 public class Database : DatabaseConnection
 {  
     private readonly string _connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__PostgreSQL") ?? "Host=postgres;Database=clamshell;Username=postgres;Password=yourpassword"; //defualt database creds
-
-    public async Task SaveMessageAsync(string content, bool signed)
+        
+    public async Task<IEnumerable<Message>> GetAllMessagesAsync()
     {
         await using var connection = new NpgsqlConnection(_connectionString);
-        await connection.ExecuteAsync("INSERT INTO messages (content, received_at, signed) VALUES (@content, @now, @signed)", new { content, now = DateTime.UtcNow, signed});
+        return await connection.QueryAsync<Message>("SELECT * FROM messages");
     }
 
     public async Task<IEnumerable<Message>> GetNewMessagesAsync()
@@ -53,4 +52,11 @@ public class Database : DatabaseConnection
         await connection.ExecuteAsync("TRUNCATE TABLE messages;");
         return 0;
     }
+
+    public async Task SaveMessageAsync(string content, bool signed)
+    {
+        await using var connection = new NpgsqlConnection(_connectionString);
+        await connection.ExecuteAsync("INSERT INTO messages (content, received_at, signed) VALUES (@content, @now, @signed)", new { content, now = DateTime.UtcNow, signed});
+    }
+
 }
