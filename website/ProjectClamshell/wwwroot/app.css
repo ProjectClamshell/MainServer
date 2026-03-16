@@ -1,0 +1,249 @@
+html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #393939;
+}
+
+main .top-row h2{
+    color: #000000;       /* make the text visible */
+    margin: 0;            /* remove default spacing */
+}
+
+/* Make the top row in main match the main content background */
+main .top-row {
+    background-color: #393939 !important; /* same as your content */
+    padding: 0 !important;      /* optional: adjust spacing */
+    margin: 0 !important;                 /* remove any default margin */
+    border-bottom: none !important;
+
+    display: block;
+}
+
+a, .btn-link {
+    color: #000000;
+}
+
+.btn-primary {
+    color: #c51616;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+.top-row.navbar {
+    height: 230px;  /* default may be ~48px */
+    display: flex;
+    align-items: center; /* vertically center logo */
+    padding-left: 1rem;
+    background-color: #555555 !important;
+}
+
+.sidebar-logo {
+    height: auto; /* adjust as needed */
+    width: auto;  /* keep aspect ratio */
+    display: block;
+    max-width: 100%;
+}
+
+.top-row.navbar .navbar-brand {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Top-row container: keep items aligned right */
+.top-row {
+    display: flex;
+    justify-content: flex-end;  /* pushes items to the right */
+    align-items: center;        /* vertical alignment */
+    padding: 0.5rem 1rem;       /* spacing inside the strip */
+    padding: 0.5rem 1rem;        /* optional padding */
+    text-align: center;          /* center text inside box */
+    flex-shrink: 0;              /* don’t shrink in flex layout */
+}
+
+/* Small InfoBox on the right */
+.top-row .info-box {
+    width: 100px;               /* smaller than default InfoBox */
+    padding: 0.25rem;  /* shrink internal padding */
+    margin: 0;         /* optional, remove margin */
+}
+
+/* Shrink text inside the top-row InfoBox */
+.top-row .info-box h2 {
+    font-size: 1rem;   /* adjust smaller or larger as needed */
+    font-weight: 600;
+    margin: 0;           /* remove default spacing */
+    line-height: 1.2;    /* optional: tighten spacing */
+}
+
+/* Vertical nav container */
+.nav-scrollable {
+    background-color: #555555;  /* slightly lighter gray */
+    min-height: 100vh;           /* full height of sidebar */
+}
+
+/* Container for first row: image + text */
+.home-header-top {
+    display: flex;
+    align-items: center;  /* vertically center text with image */
+    gap: 2rem;            /* space between image and text */
+}
+
+/* InfoBox row */
+.home-header > InfoBox {
+    margin-top: 1rem;      /* space below the first row */
+    width: 250px;          /* adjust box size */
+}
+
+/* Horizontal row for two InfoBoxes */
+.home-content-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+/* Optional: fix InfoBox widths */
+.home-content-row .info-box {
+    width: 250px;
+    flex-shrink: 0;
+}
+
+.right-column {
+    display: flex;
+    flex-direction: column;  /* stack boxes vertically */
+    gap: 1rem;
+}
+
+/* Keep both right boxes same width */
+.right-column .info-box {
+    width: 300px;  /* match the previous right box width */
+}
+
+/* Make bottom-right box fill remaining height if needed */
+.bottom-right-box {
+    flex-grow: 1;  /* optional: expands to take available vertical space */
+}
+
+/* Make sidebar link text bigger */
+.nav-scrollable .nav-link {
+    font-size: 1.25rem; /* adjust to whatever size you want */
+    font-weight: 500;   /* optional: make it slightly bolder */
+    display: block;
+    background-color: #8E8E8E !important;
+    color: #000000 !important;
+}
+
+.nav-scrollable .nav-link.active {
+    background-color: #E36216 !important; /* same as default box color */
+}
+
+/* Hover effect for sidebar links */
+.nav-scrollable .nav-link:hover {
+    background-color: #AC8066 !important;  /* color when you hover over a link */
+}
+
+/* Home screen */
+.info-box {
+    background-color: #8E8E8E;
+    color: #000000;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 8px;
+    width: 300px;
+}
+
+.dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* HOME PAGE INFORMATION */ 
+
+/* Home page header */
+.home-header {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    color: #000000;
+}
+
+.home-logo {
+    width: 120px;   /* adjust if needed */
+    height: auto;
+}
+
+.home-text h1 {
+    margin: 0;
+}
+
+.home-text p {
+    margin-top: 0.5rem;
+}
+
+/* This is for the current section */
+.info-container {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.info-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.info-box-horizontal {
+    width: 900px !important;
+}
+
+.content {
+    padding-top: 1.1rem;
+}
+
+h1:focus {
+    outline: none;
+}
+
+.valid.modified:not([type=checkbox]) {
+    outline: 1px solid #26b050;
+}
+
+.invalid {
+    outline: 1px solid #e50000;
+}
+
+.validation-message {
+    color: #e50000;
+}
+
+.blazor-error-boundary {
+    background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTYiIGhlaWdodD0iNDkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIG92ZXJmbG93PSJoaWRkZW4iPjxkZWZzPjxjbGlwUGF0aCBpZD0iY2xpcDAiPjxyZWN0IHg9IjIzNSIgeT0iNTEiIHdpZHRoPSI1NiIgaGVpZ2h0PSI0OSIvPjwvY2xpcFBhdGg+PC9kZWZzPjxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMCkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yMzUgLTUxKSI+PHBhdGggZD0iTTI2My41MDYgNTFDMjY0LjcxNyA1MSAyNjUuODEzIDUxLjQ4MzcgMjY2LjYwNiA1Mi4yNjU4TDI2Ny4wNTIgNTIuNzk4NyAyNjcuNTM5IDUzLjYyODMgMjkwLjE4NSA5Mi4xODMxIDI5MC41NDUgOTIuNzk1IDI5MC42NTYgOTIuOTk2QzI5MC44NzcgOTMuNTEzIDI5MSA5NC4wODE1IDI5MSA5NC42NzgyIDI5MSA5Ny4wNjUxIDI4OS4wMzggOTkgMjg2LjYxNyA5OUwyNDAuMzgzIDk5QzIzNy45NjMgOTkgMjM2IDk3LjA2NTEgMjM2IDk0LjY3ODIgMjM2IDk0LjM3OTkgMjM2LjAzMSA5NC4wODg2IDIzNi4wODkgOTMuODA3MkwyMzYuMzM4IDkzLjAxNjIgMjM2Ljg1OCA5Mi4xMzE0IDI1OS40NzMgNTMuNjI5NCAyNTkuOTYxIDUyLjc5ODUgMjYwLjQwNyA1Mi4yNjU4QzI2MS4yIDUxLjQ4MzcgMjYyLjI5NiA1MSAyNjMuNTA2IDUxWk0yNjMuNTg2IDY2LjAxODNDMjYwLjczNyA2Ni4wMTgzIDI1OS4zMTMgNjcuMTI0NSAyNTkuMzEzIDY5LjMzNyAyNTkuMzEzIDY5LjYxMDIgMjU5LjMzMiA2OS44NjA4IDI1OS4zNzEgNzAuMDg4N0wyNjEuNzk1IDg0LjAxNjEgMjY1LjM4IDg0LjAxNjEgMjY3LjgyMSA2OS43NDc1QzI2Ny44NiA2OS43MzA5IDI2Ny44NzkgNjkuNTg3NyAyNjcuODc5IDY5LjMxNzkgMjY3Ljg3OSA2Ny4xMTgyIDI2Ni40NDggNjYuMDE4MyAyNjMuNTg2IDY2LjAxODNaTTI2My41NzYgODYuMDU0N0MyNjEuMDQ5IDg2LjA1NDcgMjU5Ljc4NiA4Ny4zMDA1IDI1OS43ODYgODkuNzkyMSAyNTkuNzg2IDkyLjI4MzcgMjYxLjA0OSA5My41Mjk1IDI2My41NzYgOTMuNTI5NSAyNjYuMTE2IDkzLjUyOTUgMjY3LjM4NyA5Mi4yODM3IDI2Ny4zODcgODkuNzkyMSAyNjcuMzg3IDg3LjMwMDUgMjY2LjExNiA4Ni4wNTQ3IDI2My41NzYgODYuMDU0N1oiIGZpbGw9IiNGRkU1MDAiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvZz48L3N2Zz4=) no-repeat 1rem/1.8rem, #b32121;
+    padding: 1rem 1rem 1rem 3.7rem;
+    color: white;
+}
+
+    .blazor-error-boundary::after {
+        content: "An error has occurred."
+    }
+
+.darker-border-checkbox.form-check-input {
+    border-color: #929292;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+    color: var(--bs-secondary-color);
+    text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+    text-align: start;
+}
