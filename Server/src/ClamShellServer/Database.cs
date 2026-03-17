@@ -25,7 +25,7 @@ public class Database : DatabaseConnection
     public async Task<IEnumerable<Message>> GetNewMessagesAsync()
     {
         await using var connection = new NpgsqlConnection(_connectionString);
-        return await connection.QueryAsync<Message>("SELECT * FROM messages WHERE received_at >= NOW() - INTERVAL '5 seconds';");
+        return await connection.QueryAsync<Message>("SELECT * FROM messages WHERE receivedAt >= NOW() - INTERVAL '5 seconds';");
     }
 
     public async Task<IEnumerable<int>> GetTotalMessagesAsync()
