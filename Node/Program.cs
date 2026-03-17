@@ -56,7 +56,7 @@ class ClamshellNode
       byte[] msg = receiver.read();
       byte[] encryptedMsg = encryption.encrypt(msg);
       if (!sender.send(encryptedMsg)) {
-        Console.WriteLine("Unabled to send message");
+        Console.WriteLine("Unable to send message");
       }
       Thread.Sleep(500); // Send messages at 2Hz
     }
