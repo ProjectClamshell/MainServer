@@ -55,8 +55,8 @@ public class Database : DatabaseConnection
 
     public async Task SaveMessageAsync(string content, bool signed)
     {
+        var now = DateTime.UtcNow; // current timestamp
         await using var connection = new NpgsqlConnection(_connectionString);
-        await connection.ExecuteAsync("INSERT INTO messages (content, received_at, signed) VALUES (@content, @now, @signed)", new { content, now = DateTime.UtcNow, signed});
+        await connection.ExecuteAsync("INSERT INTO messages (content, signed, receivedAt) VALUES (@content, @signed, @receivedAt)", new { content, signed, receivedAt = now });
     }
-
 }

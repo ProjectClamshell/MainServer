@@ -1,6 +1,6 @@
-CREATE TABLE IF NOT EXISTS messages (
-    id          SERIAL PRIMARY KEY,
-    content     TEXT NOT NULL,
-    received_at TIMESTAMP NOT NULL,
-    signed      BOOLEAN DEFAULT FALSE
+CREATE TABLE messages (
+    id SERIAL PRIMARY KEY,
+    content TEXT NOT NULL,
+    receivedAt TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    signed BOOLEAN DEFAULT FALSE
 );
