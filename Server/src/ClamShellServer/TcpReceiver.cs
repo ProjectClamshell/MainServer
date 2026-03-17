@@ -60,30 +60,31 @@ public class TcpListenerService : BackgroundService
         listener.Stop();
     }
 
-    private async Task HandleClientAsync(TcpClient client, CancellationToken ct) //probably need to change this, add support for different kinds of messages
+private async Task HandleClientAsync(TcpClient client, CancellationToken ct)
+{
+    using (client)
     {
-        using (client)
+        var stream = client.GetStream();
+        if (!stream.CanRead) throw new Exception("Unable to read from TCP stream");
+
+        var buffer = new byte[4096];
+        int bytesRead;
+
+        while ((bytesRead = await stream.ReadAsync(buffer, ct)) > 0)
         {
-            var stream = client.GetStream();
-            if (!stream.CanRead) throw new Exception("Unable to read from TCP stream");
-
-            var buffer = new byte[4096];
-            int bytesRead = await stream.ReadAsync(buffer, ct);
             var data = buffer[..bytesRead];
+            byte[] decryptedData = Decryptor.decrypt(data);
+            byte[] pgn = decryptedData.AsSpan(0, 3).ToArray();
+            byte[] payload = decryptedData.AsSpan(3).ToArray();
 
-            while ((bytesRead = await stream.ReadAsync(buffer, ct)) > 0)
-            {
-                byte[] decryptedData = Decryptor.decrypt(data);
-                byte[] pgn = decryptedData.AsSpan(0, 3).ToArray();
-                byte[] payload = decryptedData.AsSpan(3).ToArray();
-                
-                Console.WriteLine("Message received");
-                Console.WriteLine($"PGN: {Encoding.UTF8.GetString(pgn)}");
-                Console.WriteLine($"Payload: {Encoding.UTF8.GetString(payload)}");
-                await _db.SaveMessageAsync(Encoding.UTF8.GetString(payload), false);
-            }
+            Console.WriteLine("Message received");
+            Console.WriteLine($"PGN: {Convert.ToHexString(pgn)}");
+            Console.WriteLine($"Payload: {Convert.ToHexString(payload)}");
+
+            await _db.SaveMessageAsync(Convert.ToHexString(payload), false);
         }
     }
+}
 
     public void Close()
     {
