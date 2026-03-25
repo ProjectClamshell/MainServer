@@ -1,6 +1,7 @@
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
+using System.IO.Hashing;
 
 interface ReceiverConfig {};
 struct TCPConfig : ReceiverConfig
@@ -69,11 +70,20 @@ private async Task HandleClientAsync(TcpClient client, CancellationToken ct)
 
         var buffer = new byte[4096];
         int bytesRead;
+        int validationBitLength = 8;
+        bool signedMessage = true;
 
         while ((bytesRead = await stream.ReadAsync(buffer, ct)) > 0)
         {
             var data = buffer[..bytesRead];
             byte[] decryptedData = Decryptor.decrypt(data);
+            
+            byte[] checkHashUnhashed = decryptedData.AsSpan(0, validationBitLength).ToArray();
+            byte[] checkHashHashed = XxHash3.Hash(decryptedData.AsSpan());
+            byte[] tailendHash = decryptedData.AsSpan(0, decryptedData.Length - 8).ToArray();
+
+            if (tailendHash == checkHashHashed){signedMessage = true;} else {signedMessage = false;};
+
             byte[] pgn = decryptedData.AsSpan(0, 3).ToArray();
             byte[] payload = decryptedData.AsSpan(3).ToArray();
 
@@ -81,7 +91,7 @@ private async Task HandleClientAsync(TcpClient client, CancellationToken ct)
             Console.WriteLine($"PGN: {Convert.ToHexString(pgn)}");
             Console.WriteLine($"Payload: {Convert.ToHexString(payload)}");
 
-            await _db.SaveMessageAsync(Convert.ToHexString(payload), false);
+            await _db.SaveMessageAsync(Convert.ToHexString(payload), signedMessage, pgn);
         }
     }
 }

@@ -22,10 +22,16 @@ public class Database : DatabaseConnection
         return await connection.QueryAsync<Message>("SELECT * FROM messages");
     }
 
-    public async Task<IEnumerable<Message>> GetNewMessagesAsync()
+    public async Task<IEnumerable<Message>> GetNewMessagesAsync(int requestedTime)
     {
         await using var connection = new NpgsqlConnection(_connectionString);
-        return await connection.QueryAsync<Message>("SELECT * FROM messages WHERE receivedAt >= NOW() - INTERVAL '5 seconds';");
+        return await connection.QueryAsync<Message>("SELECT * FROM messages WHERE receivedAt >= NOW() - (INTERVAL '1 second' * @Time);", new { Time = requestedTime });
+    }
+
+    public async Task<IEnumerable<Message>> GetMessageByPGN(string requestedPGN)
+    {
+        await using var connection = new NpgsqlConnection(_connectionString);
+        return await connection.QueryAsync<Message>("SELECT * FROM messages WHERE pgn = @RequestedPGN;", new {RequestedPGN = requestedPGN});
     }
 
     public async Task<IEnumerable<int>> GetTotalMessagesAsync()
@@ -53,10 +59,10 @@ public class Database : DatabaseConnection
         return 0;
     }
 
-    public async Task SaveMessageAsync(string content, bool signed)
+    public async Task SaveMessageAsync(string content, bool signed, string pgn)
     {
         var now = DateTime.UtcNow; // current timestamp
         await using var connection = new NpgsqlConnection(_connectionString);
-        await connection.ExecuteAsync("INSERT INTO messages (content, signed, receivedAt) VALUES (@content, @signed, @receivedAt)", new { content, signed, receivedAt = now });
+        await connection.ExecuteAsync("INSERT INTO messages (content, signed, receivedAt, pgn) VALUES (@content, @signed, @receivedAt, @pgn)", new { content, signed, receivedAt = now, pgn});
     }
 }

@@ -16,10 +16,10 @@ public class MessagesController : ControllerBase, IMessagesApi
 {
     private readonly Database _db = new Database();
 
-    [HttpGet("new")]
-    public async Task<IActionResult> GetNew()
+    [HttpGet("new/{pgn}")]
+    public async Task<IActionResult> GetNew(int pgn)
     {
-        var new_messages = await _db.GetNewMessagesAsync();
+        var new_messages = await _db.GetNewMessagesAsync(pgn);
         return Ok(new_messages);
     }
 
@@ -35,6 +35,13 @@ public class MessagesController : ControllerBase, IMessagesApi
     {
         var total_messages = await _db.GetTotalMessagesAsync();
         return Ok(total_messages);
+    }
+    
+    [HttpGet("by-pgn/{pgn}")]
+    public async Task<IActionResult> GetMessageByPGN(string pgn)
+    {
+        var messages = await _db.GetMessageByPGN(pgn);
+        return Ok(messages);
     }
 
     [HttpGet("signed")]
