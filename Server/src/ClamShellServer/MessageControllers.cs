@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 
 public interface IMessagesApi
 {
-    Task<IActionResult> GetNew();
-    Task<IActionResult> GetTotal();
     Task<IActionResult> GetAll();
+    Task<IActionResult> GetTotal();
+    Task<IActionResult> GetNew(int time);
+    Task<IActionResult> GetMessageByPGN(string pgn);
+    Task<IActionResult> GetMessageByTimePGN(string pgn, int time);
     Task<IActionResult> GetSigned();
     Task<IActionResult> GetUnSigned();
     Task<IActionResult> ResetTable();
@@ -15,13 +17,6 @@ public interface IMessagesApi
 public class MessagesController : ControllerBase, IMessagesApi
 {
     private readonly Database _db = new Database();
-
-    [HttpGet("new/{time}")]
-    public async Task<IActionResult> GetNew(int time)
-    {
-        var new_messages = await _db.GetNewMessagesAsync(time);
-        return Ok(new_messages);
-    }
 
     [HttpGet("all")]
     public async Task<IActionResult> GetAll()
@@ -36,11 +31,25 @@ public class MessagesController : ControllerBase, IMessagesApi
         var total_messages = await _db.GetTotalMessagesAsync();
         return Ok(total_messages);
     }
+
+    [HttpGet("new/{time}")]
+    public async Task<IActionResult> GetNew(int time)
+    {
+        var new_messages = await _db.GetNewMessagesAsync(time);
+        return Ok(new_messages);
+    }
     
     [HttpGet("by-pgn/{pgn}")]
     public async Task<IActionResult> GetMessageByPGN(string pgn)
     {
         var messages = await _db.GetMessageByPGN(pgn);
+        return Ok(messages);
+    }
+
+    [HttpGet("by-pgn/{pgn}/since/{time}")]
+    public async Task<IActionResult> GetMessageByTimePGN(string pgn, int time)
+    {
+        var messages = await _db.GetMessageByTimePGN(time, pgn);
         return Ok(messages);
     }
 
