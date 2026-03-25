@@ -19,7 +19,7 @@ public class Database : DatabaseConnection
         
     public async Task<bool> ConnectionCheck()
     {
-        return await true;
+        return await Task.FromResult(true);
     }
 
     public async Task<IEnumerable<Message>> GetAllMessagesAsync()
