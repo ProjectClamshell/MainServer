@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
 
+
 <div class="page">
     <div class="sidebar">
         <NavMenu />
@@ -8,7 +9,7 @@
     <main>
         <div class="top-row">
             <InfoBox>
-                <h2>Logout</h2>
+                <h2 style="cursor: pointer;" @onclick="Logout">Logout</h2>
             </InfoBox>
         </div>
 
@@ -23,3 +24,12 @@
     <a href="." class="reload">Reload</a>
     <span class="dismiss">🗙</span>
 </div>
+
+@code {
+    [Inject] NavigationManager Navigation { get; set; } = default!;
+
+    private void Logout()
+    {
+        Navigation.NavigateTo("/login", true);
+    }
+}

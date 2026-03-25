@@ -1,6 +1,7 @@
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     background-color: #393939;
+    color: #FFFFFF
 }
 
 main .top-row h2{
@@ -23,13 +24,28 @@ a, .btn-link {
 }
 
 .btn-primary {
-    color: #c51616;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+    color: #FFFFFF;
+    background-color: #E36216;
+    border-color: #e36116d8;
+}
+
+.btn-primary:hover {
+    background-color: #b32e06;  /* your red */
+    border-color: #b32e06;
+    color: #ffffff;             /* optional: better contrast */
+}
+
+.btn-primary:active,
+.btn-primary:focus,
+.btn-primary:active:focus {
+    background-color: #8e0f0f;  /* even darker red when pressed */
+    border-color: #8e0f0f;
+    color: #ffffff;
+    box-shadow: none;  /* remove default blue focus glow */
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #AC8066;
 }
 
 .top-row.navbar {
