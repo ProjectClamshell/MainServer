@@ -91,7 +91,7 @@ private async Task HandleClientAsync(TcpClient client, CancellationToken ct)
             Console.WriteLine($"PGN: {Convert.ToHexString(pgn)}");
             Console.WriteLine($"Payload: {Convert.ToHexString(payload)}");
 
-            await _db.SaveMessageAsync(Convert.ToHexString(payload), signedMessage, pgn);
+            await _db.SaveMessageAsync(Convert.ToHexString(payload), signedMessage, Convert.ToHexString(pgn));
         }
     }
 }

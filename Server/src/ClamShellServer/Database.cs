@@ -17,9 +17,9 @@ public class Database : DatabaseConnection
 {  
     private readonly string _connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__PostgreSQL") ?? "Host=postgres;Database=clamshell;Username=postgres;Password=yourpassword"; //defualt database creds
         
-    public async Task<IEnumerable<bool>> ConnectionCheck()
+    public async Task<bool> ConnectionCheck()
     {
-        return true;
+        return await true;
     }
 
     public async Task<IEnumerable<Message>> GetAllMessagesAsync()
