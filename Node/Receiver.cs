@@ -1,7 +1,7 @@
-using System.Reflection.Metadata.Ecma335;
 using System.Security.Cryptography;
+using System.IO.Hashing;
 
-interface IReceiver
+public interface IReceiver
 {
   public byte[] read();
 }
@@ -79,4 +79,49 @@ class DummyNMEA2000Receiver : IReceiver
 
     return nmeaMessage.ToArray();
   }
+}
+
+class DummyGPSNMEA2000Receiver : IReceiver
+{
+  private Random rand = new();
+
+  public byte[] read()
+  {
+    List<byte> nmeaMessage = [0x01, 0xF8, 0x01];
+    int lat = (int)((double)(47.56 + rand.NextDouble() * 0.02) * 1e7);
+    int lon = (int)((double)(-52.72 + rand.NextDouble() * 0.02) * 1e7);
+    nmeaMessage.AddRange([(byte)(lat & 0xFF), (byte)((lat >> 8) & 0xFF), (byte)((lat >> 16) & 0xFF), (byte)((lat >> 24) & 0xFF), (byte)(lon & 0xFF), (byte)((lon >> 8) & 0xFF), (byte)((lon >> 16) & 0xFF), (byte)((lon >> 24) & 0xFF)]);
+    nmeaMessage.AddRange(XxHash3.Hash(nmeaMessage.ToArray()));
+    return nmeaMessage.ToArray();
+  }
+}
+
+class DummySpeedNMEA2000Receiver : IReceiver
+{
+  private Random rand = new();
+
+  public byte[] read()
+  {
+    List<byte> nmeaMessage = [0x01, 0xF5, 0x03];
+    ushort waterSpeed = (ushort)(800 + (rand.NextDouble() * 400));
+    nmeaMessage.AddRange([(byte)(waterSpeed & 0xFF), (byte)(waterSpeed >> 8), 0xFF, 0xFF, 0x00, 0xFF, 0xFF, 0xFF]);
+    nmeaMessage.AddRange(XxHash3.Hash(nmeaMessage.ToArray()));
+    return nmeaMessage.ToArray();
+  }
+}
+
+public static class ReceiverFactory
+{
+    public static IReceiver Create(string type)
+    {
+      switch(type)
+      {
+        case "gps":
+          return new DummyGPSNMEA2000Receiver();
+        case "speed":
+          return new DummySpeedNMEA2000Receiver();
+        default:
+          throw new Exception("Unknown receiver type");
+      }
+    }
 }

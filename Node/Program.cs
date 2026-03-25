@@ -40,7 +40,7 @@ class ClamshellNode
 
     XChaCha20Poly1305Encyption encryption = new(key, nonce);
 
-    DummyNMEA2000Receiver receiver = new();
+    IReceiver receiver = ReceiverFactory.Create(Environment.GetEnvironmentVariable("TYPE") ?? "");
 
     TCPConfig config = new(host, port);
     TCPSender sender = new(config);
@@ -55,7 +55,7 @@ class ClamshellNode
     {
       byte[] msg = receiver.read();
       byte[] encryptedMsg = encryption.encrypt(msg);
-      if (!sender.send(encryptedMsg)) {
+      if (!sender.send(msg)) {
         Console.WriteLine("Unable to send message");
       }
       Thread.Sleep(500); // Send messages at 2Hz
