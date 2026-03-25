@@ -3,8 +3,6 @@ using dotenv.net;
 
 class ClamshellNode
 {
-  private static bool debug = false;
-
   private static byte[] key = [];
   private static byte[] nonce = [];
   private static string host = "";
@@ -27,7 +25,6 @@ class ClamshellNode
       return;
     }
 
-    debug = args.Contains("--debug");
     DotEnv.Load();
     
     key = Convert.FromHexString(Environment.GetEnvironmentVariable("XCHACHA20POLY1305_KEY") ?? "");
@@ -55,7 +52,7 @@ class ClamshellNode
     {
       byte[] msg = receiver.read();
       byte[] encryptedMsg = encryption.encrypt(msg);
-      if (!sender.send(msg)) {
+      if (!sender.send(encryptedMsg)) {
         Console.WriteLine("Unable to send message");
       }
       Thread.Sleep(500); // Send messages at 2Hz
