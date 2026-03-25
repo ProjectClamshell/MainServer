@@ -16,10 +16,10 @@ public class MessagesController : ControllerBase, IMessagesApi
 {
     private readonly Database _db = new Database();
 
-    [HttpGet("new/{pgn}")]
-    public async Task<IActionResult> GetNew(int pgn)
+    [HttpGet("new/{time}")]
+    public async Task<IActionResult> GetNew(int time)
     {
-        var new_messages = await _db.GetNewMessagesAsync(pgn);
+        var new_messages = await _db.GetNewMessagesAsync(time);
         return Ok(new_messages);
     }
 

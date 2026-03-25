@@ -16,6 +16,11 @@ public class Database : DatabaseConnection
 {  
     private readonly string _connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__PostgreSQL") ?? "Host=postgres;Database=clamshell;Username=postgres;Password=yourpassword"; //defualt database creds
         
+    public async Task<IEnumerable<bool>> ConnectionCheck()
+    {
+        return true;
+    }
+
     public async Task<IEnumerable<Message>> GetAllMessagesAsync()
     {
         await using var connection = new NpgsqlConnection(_connectionString);
@@ -61,7 +66,7 @@ public class Database : DatabaseConnection
 
     public async Task SaveMessageAsync(string content, bool signed, string pgn)
     {
-        var now = DateTime.UtcNow; // current timestamp
+        var now = DateTime.UtcNow; //current timestamp
         await using var connection = new NpgsqlConnection(_connectionString);
         await connection.ExecuteAsync("INSERT INTO messages (content, signed, receivedAt, pgn) VALUES (@content, @signed, @receivedAt, @pgn)", new { content, signed, receivedAt = now, pgn});
     }
