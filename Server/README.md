@@ -1,113 +1,209 @@
-# ClamShellServer API Documentation
+# Messages API
 
-Base URL: `http://localhost:5000/api/messages`
+A simple ASP.NET Core Web API for retrieving and managing message data.
+All endpoints are prefixed with:
+
+```
+/api/messages
+```
 
 ---
 
-## Endpoints
+## Authentication
 
-### Get New Messages
-Returns any message posted in the last 5 minutes.
+### Validate Login
+
+Checks if provided credentials match the default login.
+
+**Endpoint**
 
 ```
-Get /api/messages/new
+GET /api/messages/login/{username}/{password}
 ```
 
-### Get Total Messages
-Returns the total count of all messages in the database.
+**Example**
+
+```bash
+curl http://localhost:5000/api/messages/login/admin/admin
+```
+
+**Response**
+
+```json
+true
+```
+
+---
+
+## Get All Messages
+
+Returns all stored messages.
+
+**Endpoint**
+
+```
+GET /api/messages/all
+```
+
+**Example**
+
+```bash
+curl http://localhost:5000/api/messages/all
+```
+
+---
+
+## Get Total Message Count
+
+Returns the total number of messages.
+
+**Endpoint**
 
 ```
 GET /api/messages/total
 ```
 
+**Example**
+
+```bash
+curl http://localhost:5000/api/messages/total
+```
+
 **Response**
+
 ```json
 42
 ```
 
 ---
 
-### Get Signed Messages
-Returns the count of all messages where `signed = true`.
+## Get New Messages
+
+Returns messages newer than a given time value.
+
+**Endpoint**
+
+```
+GET /api/messages/new/{time}
+```
+
+**Parameters**
+
+* `time` (int): Timestamp or time threshold
+
+**Example**
+
+```bash
+curl http://localhost:5000/api/messages/new/60
+```
+
+---
+
+## Get Messages by PGN
+
+Returns messages matching a specific PGN.
+
+**Endpoint**
+
+```
+GET /api/messages/by-pgn/{pgn}
+```
+
+**Example**
+
+```bash
+curl http://localhost:5000/api/messages/by-pgn/01F801
+```
+
+---
+
+## Get Messages by PGN Since Time
+
+Returns messages for a PGN after a given time.
+
+**Endpoint**
+
+```
+GET /api/messages/by-pgn/{pgn}/since/{time}
+```
+
+**Example**
+
+```bash
+curl http://localhost:5000/api/messages/by-pgn/01F801/since/60
+```
+
+---
+
+## Get Signed Messages
+
+Returns messages that passed signature validation.
+
+**Endpoint**
 
 ```
 GET /api/messages/signed
 ```
 
-**Response**
-```json
-30
+**Example**
+
+```bash
+curl http://localhost:5000/api/messages/signed
 ```
 
 ---
 
-### Get Unsigned Messages
-Returns the count of all messages where `signed = false`.
+## Get Unsigned Messages
+
+Returns messages that failed signature validation.
+
+**Endpoint**
 
 ```
 GET /api/messages/unsigned
 ```
 
-**Response**
-```json
-12
-```
-
----
-
-### Create New Message
-Saves a new message to the database with the current timestamp.
-
-```
-POST /api/messages
-Content-Type: application/json
-```
-
-**Request Body**
-```json
-"your message content here"
-```
-
-**Response**
-```json
-"saved"
-```
-
----
-
-## Example curl Commands
+**Example**
 
 ```bash
-# Get new messages
-curl http://localhost:5000/api/messages/new
-
-# Get total messages
-curl http://localhost:5000/api/messages/total
-
-# Get signed messages
-curl http://localhost:5000/api/messages/signed
-
-# Get unsigned messages
 curl http://localhost:5000/api/messages/unsigned
+```
 
-# Post a new message
-curl -X POST http://localhost:5000/api/messages \
-  -H "Content-Type: application/json" \
-  -d '"your message here"'
+---
+
+## Reset Database (Testing Only)
+
+Clears or resets the message table.
+
+⚠️ **Warning:** This is intended for testing only.
+
+**Endpoint**
+
+```
+GET /api/messages/reset
+```
+
+**Example**
+
+```bash
+curl http://localhost:5000/api/messages/reset
 ```
 
 ---
 
 ## Notes
-- All responses return HTTP `200 OK` on success.
-- `received_at` is set automatically to the current UTC time on insert.
-- `signed` defaults to `false` on insert.
 
-## Structure ##
+* All endpoints use HTTP GET.
+* No authentication beyond the simple login endpoint is enforced.
+* Responses are returned using `Ok(...)` and may vary depending on database implementation.
+* PGN values are expected as hexadecimal strings.
 
-Currently the main file should run the api and receiver
+---
 
-the api reads from the database, pretty much it
+## Example Base URL
 
-the receiver handles connections, decrypts the message, and stores it (not using api calls)
-I pray that this works
+```
+http://localhost:5000/api/messages
+```
+
+Adjust the port and host as needed for your environment.
