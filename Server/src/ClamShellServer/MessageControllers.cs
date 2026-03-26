@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 public interface IMessagesApi
 {
+    Task<IActionResult> GetMessageByPGN(string login, string password);
     Task<IActionResult> GetAll();
     Task<IActionResult> GetTotal();
     Task<IActionResult> GetNew(int time);
@@ -17,6 +18,16 @@ public interface IMessagesApi
 public class MessagesController : ControllerBase, IMessagesApi
 {
     private readonly Database _db = new Database();
+
+    [HttpGet("login/{username}/{password}")]
+    public async Task<IActionResult> GetMessageByPGN(string username, string password)
+    {
+        string defaultUsername = "admin";
+        string defaultPassword = "admin";
+        bool validLogin;
+        if (defaultUsername == username && defaultPassword == password){validLogin = true;} else {validLogin = false;}
+        return Ok(validLogin);
+    }
 
     [HttpGet("all")]
     public async Task<IActionResult> GetAll()
