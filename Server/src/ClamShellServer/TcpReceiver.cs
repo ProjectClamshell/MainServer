@@ -70,7 +70,7 @@ private async Task HandleClientAsync(TcpClient client, CancellationToken ct)
 
         var buffer = new byte[4096];
         int bytesRead;
-        int validationBitLength = 8;
+        int validationByteLength = 8;
         bool signedMessage = true;
 
         while ((bytesRead = await stream.ReadAsync(buffer, ct)) > 0)
@@ -79,17 +79,25 @@ private async Task HandleClientAsync(TcpClient client, CancellationToken ct)
             byte[] decryptedData = Decryptor.decrypt(data);
 
             byte[] pgn = decryptedData.AsSpan(0, 3).ToArray();
-            byte[] payload = decryptedData.AsSpan(3).ToArray();
-
-            byte[] checkHashUnhashed = payload;
-            byte[] checkHashHashed = XxHash3.Hash(decryptedData.AsSpan());
-            byte[] tailendHash = decryptedData.AsSpan(0, decryptedData.Length - validationBitLength).ToArray();
-
-            if (tailendHash == checkHashHashed){signedMessage = true;} else {signedMessage = false;};
+            byte[] payload = decryptedData.AsSpan(3, decryptedData.Length - 3 - validationByteLength).ToArray();
+            byte[] checkHashUnhashed = decryptedData.AsSpan(0, decryptedData.Length - 3 - validationByteLength).ToArray();
+            byte[] checkHashHashed = XxHash3.Hash(checkHashUnhashed);
+            byte[] tailendHash = decryptedData.AsSpan(decryptedData.Length - validationByteLength, validationByteLength).ToArray();
+            signedMessage = tailendHash.SequenceEqual(checkHashHashed);
+            
+            Console.WriteLine($"---------------------------------------------------------------");
 
             Console.WriteLine("Message received");
             Console.WriteLine($"PGN: {Convert.ToHexString(pgn)}");
             Console.WriteLine($"Payload: {Convert.ToHexString(payload)}");
+
+            Console.WriteLine($"Decrypted Data: {Convert.ToHexString(decryptedData)}");       
+            Console.WriteLine($"checkHashHashed: {Convert.ToHexString(checkHashUnhashed)}");
+            Console.WriteLine($"TailendHash: {Convert.ToHexString(tailendHash)}");
+            Console.WriteLine($"checkHashHashed: {Convert.ToHexString(checkHashHashed)}");
+
+            Console.WriteLine($"---------------------------------------------------------------");
+
 
             await _db.SaveMessageAsync(Convert.ToHexString(payload), signedMessage, Convert.ToHexString(pgn));
         }
