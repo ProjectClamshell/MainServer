@@ -77,15 +77,15 @@ private async Task HandleClientAsync(TcpClient client, CancellationToken ct)
         {
             var data = buffer[..bytesRead];
             byte[] decryptedData = Decryptor.decrypt(data);
-            
-            byte[] checkHashUnhashed = decryptedData.AsSpan(0, validationBitLength).ToArray();
-            byte[] checkHashHashed = XxHash3.Hash(decryptedData.AsSpan());
-            byte[] tailendHash = decryptedData.AsSpan(0, decryptedData.Length - 8).ToArray();
-
-            if (tailendHash == checkHashHashed){signedMessage = true;} else {signedMessage = false;};
 
             byte[] pgn = decryptedData.AsSpan(0, 3).ToArray();
             byte[] payload = decryptedData.AsSpan(3).ToArray();
+
+            byte[] checkHashUnhashed = payload;
+            byte[] checkHashHashed = XxHash3.Hash(decryptedData.AsSpan());
+            byte[] tailendHash = decryptedData.AsSpan(0, decryptedData.Length - validationBitLength).ToArray();
+
+            if (tailendHash == checkHashHashed){signedMessage = true;} else {signedMessage = false;};
 
             Console.WriteLine("Message received");
             Console.WriteLine($"PGN: {Convert.ToHexString(pgn)}");

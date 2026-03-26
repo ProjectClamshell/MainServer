@@ -36,6 +36,17 @@ services:
     restart: unless-stopped
     ports:
       - "8080:8080"
+  
+  node:
+    build: ./Node
+    environment:
+      XCHACHA20POLY1305_KEY: ${XCHACHA20POLY1305_KEY}
+      XCHACHA20POLY1305_NONCE: ${XCHACHA20POLY1305_NONCE}
+      TCP_HOST: tcpapi
+      TCP_PORT: "9000"
+    restart: unless-stopped
+    depends_on:
+      - tcpapi
 
 volumes:
   postgres_data:

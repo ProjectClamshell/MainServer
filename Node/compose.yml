@@ -1,0 +1,23 @@
+services:
+
+  node1:
+    build: .
+    environment:
+      XCHACHA20POLY1305_KEY: ${XCHACHA20POLY1305_KEY}
+      XCHACHA20POLY1305_NONCE: ${XCHACHA20POLY1305_NONCE}
+      TCP_HOST: tcpapi
+      TCP_PORT: "9000"
+      TYPE: "gps"
+    command: ["sh", "-c", "sleep 10 && dotnet ClamshellNode.dll"]
+    restart: unless-stopped
+
+  node2:
+    build: .
+    environment:
+      XCHACHA20POLY1305_KEY: ${XCHACHA20POLY1305_KEY}
+      XCHACHA20POLY1305_NONCE: ${XCHACHA20POLY1305_NONCE}
+      TCP_HOST: tcpapi
+      TCP_PORT: "9000"
+      TYPE: "speed"
+    command: ["sh", "-c", "sleep 10 && dotnet ClamshellNode.dll"]
+    restart: unless-stopped
