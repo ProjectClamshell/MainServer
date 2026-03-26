@@ -61,48 +61,46 @@ public class TcpListenerService : BackgroundService
         listener.Stop();
     }
 
-private async Task HandleClientAsync(TcpClient client, CancellationToken ct)
-{
-    using (client)
+    private async Task HandleClientAsync(TcpClient client, CancellationToken ct)
     {
-        var stream = client.GetStream();
-        if (!stream.CanRead) throw new Exception("Unable to read from TCP stream");
-
-        var buffer = new byte[4096];
-        int bytesRead;
-        int validationByteLength = 8;
-        bool signedMessage = true;
-
-        while ((bytesRead = await stream.ReadAsync(buffer, ct)) > 0)
+        using (client)
         {
-            var data = buffer[..bytesRead];
-            byte[] decryptedData = Decryptor.decrypt(data);
+            var stream = client.GetStream();
+            if (!stream.CanRead) throw new Exception("Unable to read from TCP stream");
 
-            byte[] pgn = decryptedData.AsSpan(0, 3).ToArray();
-            byte[] payload = decryptedData.AsSpan(3, decryptedData.Length - 3 - validationByteLength).ToArray();
-            byte[] checkHashUnhashed = decryptedData.AsSpan(0, decryptedData.Length - 3 - validationByteLength).ToArray();
-            byte[] checkHashHashed = XxHash3.Hash(checkHashUnhashed);
-            byte[] tailendHash = decryptedData.AsSpan(decryptedData.Length - validationByteLength, validationByteLength).ToArray();
-            signedMessage = tailendHash.SequenceEqual(checkHashHashed);
-            
-            Console.WriteLine($"---------------------------------------------------------------");
+            var buffer = new byte[4096];
+            int bytesRead;
+            bool verifiedMessage = false;
 
-            Console.WriteLine("Message received");
-            Console.WriteLine($"PGN: {Convert.ToHexString(pgn)}");
-            Console.WriteLine($"Payload: {Convert.ToHexString(payload)}");
+            while ((bytesRead = await stream.ReadAsync(buffer, ct)) > 0)
+            {
+                var data = buffer[..bytesRead];
+                byte[] decryptedData = Decryptor.decrypt(data);
 
-            Console.WriteLine($"Decrypted Data: {Convert.ToHexString(decryptedData)}");       
-            Console.WriteLine($"checkHashHashed: {Convert.ToHexString(checkHashUnhashed)}");
-            Console.WriteLine($"TailendHash: {Convert.ToHexString(tailendHash)}");
-            Console.WriteLine($"checkHashHashed: {Convert.ToHexString(checkHashHashed)}");
+                byte[] pgn = decryptedData.AsSpan(0, 3).ToArray();
+                byte[] payload = decryptedData.AsSpan(3, decryptedData.Length - 3 - 8).ToArray();
 
-            Console.WriteLine($"---------------------------------------------------------------");
+                byte[] messageWithoutHash = decryptedData[..^8];
+                byte[] receivedHash = decryptedData[^8..];
+                byte[] computedHash = XxHash3.Hash(messageWithoutHash).Take(8).ToArray();
 
+                verifiedMessage = receivedHash.SequenceEqual(computedHash);
 
-            await _db.SaveMessageAsync(Convert.ToHexString(payload), signedMessage, Convert.ToHexString(pgn));
+                Console.WriteLine("---------------------------------------------------------------");
+                Console.WriteLine("Message received");
+                Console.WriteLine($"PGN: {Convert.ToHexString(pgn)}");
+                Console.WriteLine($"Payload: {Convert.ToHexString(payload)}");
+                Console.WriteLine($"Decrypted Data: {Convert.ToHexString(decryptedData)}");
+                Console.WriteLine($"MessageWithoutHash: {Convert.ToHexString(messageWithoutHash)}");
+                Console.WriteLine($"ReceivedHash: {Convert.ToHexString(receivedHash)}");
+                Console.WriteLine($"ComputedHash: {Convert.ToHexString(computedHash)}");
+                Console.WriteLine($"VerifiedMessage: {verifiedMessage}");
+                Console.WriteLine("---------------------------------------------------------------");
+
+                await _db.SaveMessageAsync(Convert.ToHexString(payload), verifiedMessage, Convert.ToHexString(pgn));
+            }
         }
     }
-}
 
     public void Close()
     {

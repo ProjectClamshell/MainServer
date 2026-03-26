@@ -37,29 +37,29 @@ services:
     ports:
       - "8080:8080"
   
-  node1:
-    build: ./Node
-    environment:
-      XCHACHA20POLY1305_KEY: ${XCHACHA20POLY1305_KEY}
-      XCHACHA20POLY1305_NONCE: ${XCHACHA20POLY1305_NONCE}
-      TCP_HOST: tcpapi
-      TCP_PORT: "9000"
-      TYPE: "gps"
-    restart: unless-stopped
-    depends_on:
-      - tcpapi
+  # node1:
+  #   build: ./Node
+  #   environment:
+  #     XCHACHA20POLY1305_KEY: ${XCHACHA20POLY1305_KEY}
+  #     XCHACHA20POLY1305_NONCE: ${XCHACHA20POLY1305_NONCE}
+  #     TCP_HOST: tcpapi
+  #     TCP_PORT: "9000"
+  #     TYPE: "gps"
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - tcpapi
 
-  node2:
-    build: ./Node
-    environment:
-      XCHACHA20POLY1305_KEY: ${XCHACHA20POLY1305_KEY}
-      XCHACHA20POLY1305_NONCE: ${XCHACHA20POLY1305_NONCE}
-      TCP_HOST: tcpapi
-      TCP_PORT: "9000"
-      TYPE: "gps"
-    restart: unless-stopped
-    depends_on:
-      - tcpapi
+  # node2:
+  #   build: ./Node
+  #   environment:
+  #     XCHACHA20POLY1305_KEY: ${XCHACHA20POLY1305_KEY}
+  #     XCHACHA20POLY1305_NONCE: ${XCHACHA20POLY1305_NONCE}
+  #     TCP_HOST: tcpapi
+  #     TCP_PORT: "9000"
+  #     TYPE: "gps"
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - tcpapi
 
 volumes:
   postgres_data:
