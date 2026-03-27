@@ -85,6 +85,7 @@ a, .btn-link {
     width: 100px;               /* smaller than default InfoBox */
     padding: 0.25rem;  /* shrink internal padding */
     margin: 0;         /* optional, remove margin */
+    background-color: transparent;
 }
 
 /* Shrink text inside the top-row InfoBox */
