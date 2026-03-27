@@ -39,33 +39,25 @@
     public LoginViewModel Model { get; set; } = new();
 
     private async Task Authenticate()
+{
+    try
     {
-        try
+        var url = $"http://localhost:5000/api/messages/login/{Model.UserName}/{Model.Password}";
+
+        var isValid = await Http.GetFromJsonAsync<bool>(url);
+
+        if (isValid)
         {
-            var response = await Http.PostAsJsonAsync("https://localhost:5000/api/messages/login/admin/admin", Model);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var isValid = await response.Content.ReadFromJsonAsync<bool>();
-
-                if (isValid)
-                {
-                    Navigation.NavigateTo("/home");
-                }
-                else
-                {
-                    Console.WriteLine("Invalid username or password");
-                }
-            }
-            else
-            {
-                var error = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"Login failed: {error}");
-            }
+            Navigation.NavigateTo("/home");
         }
-        catch (Exception ex)
+        else
         {
-            Console.WriteLine($"Error during login: {ex.Message}");
+            Console.WriteLine("Invalid login");
         }
     }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error: {ex.Message}");
+    }
+}
 }
