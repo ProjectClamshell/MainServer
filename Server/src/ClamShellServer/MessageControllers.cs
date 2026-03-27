@@ -18,12 +18,12 @@ public interface IMessagesApi
 public class MessagesController : ControllerBase, IMessagesApi
 {
     private readonly Database _db = new Database();
+    private readonly string defaultUsername = Environment.GetEnvironmentVariable("DEFAULTUSERNAME") ?? throw new InvalidOperationException("DEFAULTUSERNAME not set");
+    private readonly string defaultPassword = Environment.GetEnvironmentVariable("DEFAULTPASSWORD") ?? throw new InvalidOperationException("DEFAULTPASSWORD not set");
 
     [HttpGet("login/{username}/{password}")]
     public async Task<IActionResult> GetMessageByPGN(string username, string password)
     {
-        string defaultUsername = "admin";
-        string defaultPassword = "admin";
         bool validLogin;
         if (defaultUsername == username && defaultPassword == password){validLogin = true;} else {validLogin = false;}
         return Ok(validLogin);
