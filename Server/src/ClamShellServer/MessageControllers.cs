@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 public interface IMessagesApi
 {
-    Task<IActionResult> GetMessageByPGN(string login, string password);
+    Task<IActionResult> LoginUser(string login, string password);
     Task<IActionResult> GetAll();
     Task<IActionResult> GetTotal();
     Task<IActionResult> GetNew(int time);
@@ -22,7 +22,7 @@ public class MessagesController : ControllerBase, IMessagesApi
     private readonly string defaultPassword = Environment.GetEnvironmentVariable("DEFAULTPASSWORD") ?? throw new InvalidOperationException("DEFAULTPASSWORD not set");
 
     [HttpGet("login/{username}/{password}")]
-    public async Task<IActionResult> GetMessageByPGN(string username, string password)
+    public async Task<IActionResult> LoginUser(string username, string password)
     {
         bool validLogin;
         if (defaultUsername == username && defaultPassword == password){validLogin = true;} else {validLogin = false;}
