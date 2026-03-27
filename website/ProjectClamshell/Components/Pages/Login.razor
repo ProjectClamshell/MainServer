@@ -42,7 +42,7 @@
     {
         try
         {
-            var response = await Http.PostAsJsonAsync("https://localhost:5001/api/auth/login", Model);
+            var response = await Http.PostAsJsonAsync("https://localhost:5000/api/messages/login/admin/admin", Model);
 
             if (response.IsSuccessStatusCode)
             {
