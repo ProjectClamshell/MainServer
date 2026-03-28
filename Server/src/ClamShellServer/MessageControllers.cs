@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 public interface IMessagesApi
 {
     Task<IActionResult> LoginUser(string login, string password);
+    Task<IActionResult> StatusCheck();
     Task<IActionResult> GetAll();
     Task<IActionResult> GetTotal();
     Task<IActionResult> GetNew(int time);
@@ -27,6 +28,13 @@ public class MessagesController : ControllerBase, IMessagesApi
         bool validLogin;
         if (defaultUsername == username && defaultPassword == password){validLogin = true;} else {validLogin = false;}
         return Ok(validLogin);
+    }
+
+    [HttpGet("status")]
+    public async Task<IActionResult> StatusCheck()
+    {
+        bool statusLive = true;
+        return Ok(statusLive);
     }
 
     [HttpGet("all")]
