@@ -1,33 +1,28 @@
 # Messages API
 
-A simple ASP.NET Core Web API for retrieving and managing message data.
-All endpoints are prefixed with:
+A REST API for retrieving and managing messages, including signed/unsigned and validated/unvalidated data.
+
+## Base URL
 
 ```
-/api/messages
+http://<host>:<port>/api/messages
 ```
 
----
+Replace `<host>` and `<port>` with your server configuration.
 
-## Authentication
+## Endpoints
 
-### Validate Login
+### 1. Login
 
-Checks if provided credentials match the default login.
+**GET** `/login/{username}/{password}`
 
-**Endpoint**
-
-```
-GET /api/messages/login/{username}/{password}
-```
-
-**Example**
+**Description:** Validate user login.
 
 ```bash
-curl http://localhost:5000/api/messages/login/admin/admin
+curl -X GET "http://localhost:5000/api/messages/login/admin/password123"
 ```
 
-**Response**
+**Response:**
 
 ```json
 true
@@ -35,175 +30,120 @@ true
 
 ---
 
-## Get All Messages
+### 2. Status Check
 
-Returns all stored messages.
+**GET** `/status`
 
-**Endpoint**
-
-```
-GET /api/messages/all
-```
-
-**Example**
+**Description:** Check if the service is live.
 
 ```bash
-curl http://localhost:5000/api/messages/all
+curl -X GET "http://localhost:5000/api/messages/status"
 ```
 
----
-
-## Get Total Message Count
-
-Returns the total number of messages.
-
-**Endpoint**
-
-```
-GET /api/messages/total
-```
-
-**Example**
-
-```bash
-curl http://localhost:5000/api/messages/total
-```
-
-**Response**
+**Response:**
 
 ```json
-42
+true
 ```
 
 ---
 
-## Get New Messages
+### 3. Get All Messages
 
-Returns messages newer than a given time value.
-
-**Endpoint**
-
-```
-GET /api/messages/new/{time}
-```
-
-**Parameters**
-
-* `time` (int): Timestamp or time threshold
-
-**Example**
+**GET** `/all`
 
 ```bash
-curl http://localhost:5000/api/messages/new/60
+curl -X GET "http://localhost:5000/api/messages/all"
 ```
 
 ---
 
-## Get Messages by PGN
+### 4. Get Total Message Count
 
-Returns messages matching a specific PGN.
-
-**Endpoint**
-
-```
-GET /api/messages/by-pgn/{pgn}
-```
-
-**Example**
+**GET** `/total`
 
 ```bash
-curl http://localhost:5000/api/messages/by-pgn/01F801
+curl -X GET "http://localhost:5000/api/messages/total"
 ```
 
 ---
 
-## Get Messages by PGN Since Time
+### 5. Get New Messages Since Time
 
-Returns messages for a PGN after a given time.
-
-**Endpoint**
-
-```
-GET /api/messages/by-pgn/{pgn}/since/{time}
-```
-
-**Example**
+**GET** `/new/{time}`
 
 ```bash
-curl http://localhost:5000/api/messages/by-pgn/01F801/since/60
+curl -X GET "http://localhost:5000/api/messages/new/60"
 ```
 
 ---
 
-## Get Signed Messages
+### 6. Get Messages by PGN
 
-Returns messages that passed signature validation.
-
-**Endpoint**
-
-```
-GET /api/messages/signed
-```
-
-**Example**
+**GET** `/by-pgn/{pgn}`
 
 ```bash
-curl http://localhost:5000/api/messages/signed
+curl -X GET "http://localhost:5000/api/messages/by-pgn/01F112"
 ```
 
 ---
 
-## Get Unsigned Messages
+### 7. Get Messages by PGN Since Time
 
-Returns messages that failed signature validation.
-
-**Endpoint**
-
-```
-GET /api/messages/unsigned
-```
-
-**Example**
+**GET** `/by-pgn/{pgn}/since/{time}`
 
 ```bash
-curl http://localhost:5000/api/messages/unsigned
+curl -X GET "http://localhost:5000/api/messages/by-pgn/01F112/since/60"
 ```
 
 ---
 
-## Reset Database (Testing Only)
+### 8. Get Signed Messages
 
-Clears or resets the message table.
-
-⚠️ **Warning:** This is intended for testing only.
-
-**Endpoint**
-
-```
-GET /api/messages/reset
-```
-
-**Example**
+**GET** `/signed`
 
 ```bash
-curl http://localhost:5000/api/messages/reset
+curl -X GET "http://localhost:5000/api/messages/signed"
 ```
 
 ---
 
-## Notes
+### 9. Get Unsigned Messages
 
-* All endpoints use HTTP GET.
-* No authentication beyond the simple login endpoint is enforced.
-* Responses are returned using `Ok(...)` and may vary depending on database implementation.
-* PGN values are expected as hexadecimal strings.
+**GET** `/unsigned`
+
+```bash
+curl -X GET "http://localhost:5000/api/messages/unsigned"
+```
 
 ---
 
-## Example Base URL
+### 10. Get Validated Messages
 
-```
-http://localhost:5000/api/messages
+**GET** `/validated`
+
+```bash
+curl -X GET "http://localhost:5000/api/messages/validated"
 ```
 
-Adjust the port and host as needed for your environment.
+---
+
+### 11. Get Unvalidated Messages
+
+**GET** `/unvalidated`
+
+```bash
+curl -X GET "http://localhost:5000/api/messages/unvalidated"
+```
+
+---
+
+### 12. Reset Table (Testing Only)
+
+**GET** `/Reset`
+
+```bash
+curl -X GET "http://localhost:5000/api/messages/Reset"
+```
+
+---

@@ -10,18 +10,14 @@ public interface DatabaseConnection
     Task<IEnumerable<int>> GetTotalMessagesAsync();
     Task<IEnumerable<int>> GetSignedMessagesAsync();
     Task<IEnumerable<int>> GetUnSignedMessagesAsync();
+    Task<IEnumerable<int>> GetValidatedMessagesAsync();
+    Task<IEnumerable<int>> GetUnValidatedMessagesAsync();
     Task<int> ResetTableAsync();
-    Task SaveMessageAsync(string content, bool signed, string pgn);
-}
+    Task SaveMessageAsync(string content, bool signed, bool validated, string pgn);}
 public class Database : DatabaseConnection
 {  
     private readonly string _connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__PostgreSQL") ?? "Host=postgres;Database=clamshell;Username=postgres;Password=yourpassword"; //defualt database creds
-        
-    public async Task<bool> ConnectionCheck()
-    {
-        return await Task.FromResult(true);
-    }
-
+     
     public async Task<IEnumerable<Message>> GetAllMessagesAsync()
     {
         await using var connection = new NpgsqlConnection(_connectionString);
@@ -64,6 +60,18 @@ public class Database : DatabaseConnection
         return await connection.QueryAsync<int>("SELECT count(*) FROM messages where signed = False");
     }
 
+    public async Task<IEnumerable<int>> GetValidatedMessagesAsync()
+    {
+        await using var connection = new NpgsqlConnection(_connectionString);
+        return await connection.QueryAsync<int>("SELECT count(*) FROM messages where validated = True");
+    }
+
+    public async Task<IEnumerable<int>> GetUnValidatedMessagesAsync()
+    {
+        await using var connection = new NpgsqlConnection(_connectionString);
+        return await connection.QueryAsync<int>("SELECT count(*) FROM messages where validated = False");
+    }
+
     public async Task<int> ResetTableAsync()
     {
         await using var connection = new NpgsqlConnection(_connectionString);
@@ -71,10 +79,10 @@ public class Database : DatabaseConnection
         return 0;
     }
 
-    public async Task SaveMessageAsync(string content, bool signed, string pgn)
+    public async Task SaveMessageAsync(string content, bool signed, bool validated, string pgn)
     {
         var now = DateTime.UtcNow; //current timestamp
         await using var connection = new NpgsqlConnection(_connectionString);
-        await connection.ExecuteAsync("INSERT INTO messages (content, signed, receivedAt, pgn) VALUES (@content, @signed, @receivedAt, @pgn)", new { content, signed, receivedAt = now, pgn});
+        await connection.ExecuteAsync("INSERT INTO messages (content, signed, validated, receivedAt, pgn) VALUES (@content, @signed, @validated, @receivedAt, @pgn)", new { content, signed, validated, receivedAt = now, pgn});
     }
 }

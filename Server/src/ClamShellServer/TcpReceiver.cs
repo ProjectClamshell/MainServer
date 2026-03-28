@@ -8,6 +8,7 @@ struct TCPConfig : ReceiverConfig
 {
     public readonly string host;
     public readonly ushort port;
+    private byte[][] pgns;
     public TCPConfig(string host, ushort port)
     {
         this.host = host;
@@ -26,6 +27,16 @@ public class TcpListenerService : BackgroundService
     private readonly TcpListener listener;
     private static readonly Database _db = new Database();
     private static readonly XChaCha20Poly1305Decryption Decryptor = new XChaCha20Poly1305Decryption(key, nonce);
+
+    private byte[][] pgns =
+  {
+    [0x01, 0xF1, 0x12], // Vessel Heading
+    [0x01, 0xF2, 0x00], // Engine Paremeters (Rapid)
+    [0x01, 0xF5, 0x03], // Speed
+    [0x01, 0xF5, 0x0B], // Water Depth
+    [0x01, 0xF8, 0x01], // Position Update (Rapid)
+    [0x01, 0xFD, 0x02], // Wind Data
+  };
 
     public TcpListenerService()
     {
@@ -70,7 +81,8 @@ public class TcpListenerService : BackgroundService
 
             var buffer = new byte[4096];
             int bytesRead;
-            bool verifiedMessage = false;
+            bool validatedMessage = false;
+            bool signedMessage = false;
 
             while ((bytesRead = await stream.ReadAsync(buffer, ct)) > 0)
             {
@@ -84,7 +96,8 @@ public class TcpListenerService : BackgroundService
                 byte[] receivedHash = decryptedData[^8..];
                 byte[] computedHash = XxHash3.Hash(messageWithoutHash).Take(8).ToArray();
 
-                verifiedMessage = receivedHash.SequenceEqual(computedHash);
+                signedMessage = receivedHash.SequenceEqual(computedHash);
+                validatedMessage = pgns.Any(existingPgn => existingPgn.SequenceEqual(pgn));
 
                 Console.WriteLine("---------------------------------------------------------------");
                 Console.WriteLine("Message received");
@@ -94,10 +107,10 @@ public class TcpListenerService : BackgroundService
                 Console.WriteLine($"MessageWithoutHash: {Convert.ToHexString(messageWithoutHash)}");
                 Console.WriteLine($"ReceivedHash: {Convert.ToHexString(receivedHash)}");
                 Console.WriteLine($"ComputedHash: {Convert.ToHexString(computedHash)}");
-                Console.WriteLine($"VerifiedMessage: {verifiedMessage}");
+                Console.WriteLine($"signedMessage: {signedMessage}");
                 Console.WriteLine("---------------------------------------------------------------");
 
-                await _db.SaveMessageAsync(Convert.ToHexString(payload), verifiedMessage, Convert.ToHexString(pgn));
+                await _db.SaveMessageAsync(Convert.ToHexString(payload), signedMessage, validatedMessage, Convert.ToHexString(pgn));
             }
         }
     }

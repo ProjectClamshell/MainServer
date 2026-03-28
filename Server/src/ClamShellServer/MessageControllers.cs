@@ -11,6 +11,8 @@ public interface IMessagesApi
     Task<IActionResult> GetMessageByTimePGN(string pgn, int time);
     Task<IActionResult> GetSigned();
     Task<IActionResult> GetUnSigned();
+    Task<IActionResult> GetValidated();
+    Task<IActionResult> GetUnValidated();
     Task<IActionResult> ResetTable();
 }
 
@@ -83,6 +85,20 @@ public class MessagesController : ControllerBase, IMessagesApi
     public async Task<IActionResult> GetUnSigned()
     {
         var unsigned_messages = await _db.GetUnSignedMessagesAsync();
+        return Ok(unsigned_messages);
+    }
+
+    [HttpGet("validated")]
+    public async Task<IActionResult> GetValidated()
+    {
+        var signed_messages = await _db.GetValidatedMessagesAsync();
+        return Ok(signed_messages);
+    }
+
+    [HttpGet("unvalidated")]
+    public async Task<IActionResult> GetUnValidated()
+    {
+        var unsigned_messages = await _db.GetUnValidatedMessagesAsync();
         return Ok(unsigned_messages);
     }
 
