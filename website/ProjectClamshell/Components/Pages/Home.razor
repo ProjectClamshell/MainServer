@@ -25,15 +25,15 @@
 
             <div class="bottom-right-box">
                 <InfoBox>
-                    <p>Encrypted Using </p>
+                    <p>Encrypted Using: </p>
                     <p>ChaCha20-Poly1305</p>
-                    <p>XCHACHA20POLY1305_KEY=39F6A</p>
-                    <p>E55B5A83E007B4A8911AFF7A515</p>
-                    <p>725CF97711B0B3B51E324B03A31</p>
-                    <p>3B2EC</p>
-                    <p>XCHACHA20POLY1305_NONCE=0B9</p>
-                    <p>CCF526C1E460D084045649A513A</p>
-                    <p>615647AD3D2AB71EA6</p>
+                    @if (encryptionStatus != null)
+                    {
+                        <p>XCHACHA20POLY1305_KEY=</p>
+                        <p>****************@encryptionStatus.Key</p>
+                        <p>XCHACHA20POLY1305_NONCE=</p>
+                        <p>****************@encryptionStatus.Nonce</p>
+                    }
                 </InfoBox>
             </div>
 
@@ -44,6 +44,8 @@
 
 @code {
     private string statusText = "Checking...";
+
+    private EncryptionStatus? encryptionStatus;
     protected override async Task OnInitializedAsync()
     {
         await CheckStatus();
@@ -61,5 +63,19 @@
         {
             statusText = "Offline";
         }
+        try
+        {
+            encryptionStatus = await Http.GetFromJsonAsync<EncryptionStatus>("http://tcpapi:5000/api/messages/encryptionStatus");
+        }
+        catch
+        {
+            encryptionStatus = null;
+        }
+    }
+
+    public class EncryptionStatus
+    {
+        public string? Key { get; set; }
+        public string? Nonce { get; set; }
     }
 }
