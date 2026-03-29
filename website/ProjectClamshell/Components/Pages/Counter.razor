@@ -16,6 +16,21 @@
         <div class="info-box">
             <h3>@infoValidated</h3>
 
+
+            @if (infoValidated > 0)
+            {
+                if(latestvalidated != null)
+                {
+                    <div>
+                        <strong>Latest Message:</strong> <br />
+                        <strong>Id:</strong> @latestvalidated.Id <br />
+                        <strong>Content:</strong> @latestvalidated.Content <br />
+                        <strong>Received At:</strong> @latestvalidated.ReceivedAt <br />
+                        <strong>RGN:</strong> @latestvalidated.PGN
+                    </div>
+                }
+            }
+
         </div>
     </div>
 
@@ -27,6 +42,21 @@
         <div class="info-box">
             <h3>@infoSigned</h3>
 
+            @if (infoSigned > 0)
+            {
+                if(latestsigned != null)
+                {
+                    <div>
+                        <strong>Latest Message:</strong> <br />
+                        <strong>Id:</strong> @latestsigned.Id <br />
+                        <strong>Content:</strong> @latestsigned.Content <br />
+                        <strong>Received At:</strong> @latestsigned.ReceivedAt <br />
+                        <strong>RGN:</strong> @latestsigned.PGN
+                    </div>
+                }
+            }
+
+
         </div>
     </div>
 
@@ -37,6 +67,20 @@
 
         <div class="info-box">
             <h3>@infoCorrupted</h3>
+
+            @if (infoCorrupted > 0)
+            {
+                if(latestcorrupted != null)
+                {
+                    <div>
+                        <strong>Latest Message:</strong> <br />
+                        <strong>Id:</strong> @latestcorrupted.Id <br />
+                        <strong>Content:</strong> @latestcorrupted.Content <br />
+                        <strong>Received At:</strong> @latestcorrupted.ReceivedAt <br />
+                        <strong>RGN:</strong> @latestcorrupted.PGN
+                    </div>
+                }
+            }
 
         </div>
     </div>
@@ -52,6 +96,11 @@
     private List<Message> validatedMessages = new();
     private List<Message> signedMessages = new();
     private List<Message> corruptedMessages = new();
+
+    private Message? latestvalidated;
+    private Message? latestsigned;
+    private Message? latestcorrupted;
+
     protected override async Task OnInitializedAsync()
     {
         await LoadCounts();
@@ -69,7 +118,7 @@
         refreshTimer.Enabled = true;
     }
 
-    private async Task LoadCounts()
+    /* private async Task LoadCounts()
     {
         try
         {
@@ -91,6 +140,34 @@
             infoCorrupted = -1;
         }
 
+    } */
+
+    private async Task LoadCounts()
+    {
+        try
+        {
+            validatedMessages = await Http.GetFromJsonAsync<List<Message>>("http://tcpapi:5000/api/messages/validated") ?? new();
+            signedMessages = await Http.GetFromJsonAsync<List<Message>>("http://tcpapi:5000/api/messages/signed") ?? new();
+            corruptedMessages = await Http.GetFromJsonAsync<List<Message>>("http://tcpapi:5000/api/messages/unsigned") ?? new();
+
+            infoValidated = validatedMessages.Count;
+            infoSigned = signedMessages.Count;
+            infoCorrupted = corruptedMessages.Count;
+
+            latestvalidated = validatedMessages.OrderByDescending(m => m.ReceivedAt).FirstOrDefault();
+            latestsigned = signedMessages.OrderByDescending(m => m.ReceivedAt).FirstOrDefault();
+            latestcorrupted = corruptedMessages.OrderByDescending(m => m.ReceivedAt).FirstOrDefault();
+        }
+        catch
+        {
+            validatedMessages = new();
+            signedMessages = new();
+            corruptedMessages = new();
+
+            infoValidated = -1;
+            infoSigned = -1;
+            infoCorrupted = -1;
+        }
     }
 
     public class Message
