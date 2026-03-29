@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 public interface IMessagesApi
 {
-    
+    Task<IActionResult> EncryptionStatus();
     Task<IActionResult> LoginUser(string login, string password);
     Task<IActionResult> StatusCheck();
     Task<IActionResult> GetAll();
@@ -32,7 +32,7 @@ public class MessagesController : ControllerBase, IMessagesApi
     {
         var keyHex = Convert.ToHexString(key);
         var nonceHex = Convert.ToHexString(nonce);
-    
+
         return Ok(new
         {
             key = keyHex[^10..],
