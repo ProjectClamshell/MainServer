@@ -5,17 +5,15 @@ html, body {
 }
 
 main .top-row h2{
-    color: #000000;       /* make the text visible */
-    margin: 0;            /* remove default spacing */
+    color: #000000;
+    margin: 0;
 }
 
-/* Make the top row in main match the main content background */
 main .top-row {
-    background-color: #393939 !important; /* same as your content */
-    padding: 0 !important;      /* optional: adjust spacing */
-    margin: 0 !important;                 /* remove any default margin */
+    background-color: #393939 !important;
+    padding: 0 !important;
+    margin: 0 !important;
     border-bottom: none !important;
-
     display: block;
 }
 
@@ -30,18 +28,16 @@ a, .btn-link {
 }
 
 .btn-primary:hover {
-    background-color: #b32e06;  /* your red */
+    background-color: #b32e06;
     border-color: #b32e06;
-    color: #ffffff;             /* optional: better contrast */
+    color: #ffffff;
 }
 
-.btn-primary:active,
-.btn-primary:focus,
-.btn-primary:active:focus {
-    background-color: #8e0f0f;  /* even darker red when pressed */
+.btn-primary:active, .btn-primary:focus, .btn-primary:active:focus {
+    background-color: #8e0f0f;
     border-color: #8e0f0f;
     color: #ffffff;
-    box-shadow: none;  /* remove default blue focus glow */
+    box-shadow: none;
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
@@ -49,16 +45,16 @@ a, .btn-link {
 }
 
 .top-row.navbar {
-    height: 230px;  /* default may be ~48px */
+    height: 230px;
     display: flex;
-    align-items: center; /* vertically center logo */
+    align-items: center;
     padding-left: 1rem;
     background-color: #555555 !important;
 }
 
 .sidebar-logo {
-    height: auto; /* adjust as needed */
-    width: auto;  /* keep aspect ratio */
+    height: auto;
+    width: auto;
     display: block;
     max-width: 100%;
 }
@@ -69,53 +65,46 @@ a, .btn-link {
     width: 100%;
 }
 
-/* Top-row container: keep items aligned right */
 .top-row {
     display: flex;
-    justify-content: flex-end;  /* pushes items to the right */
-    align-items: center;        /* vertical alignment */
-    padding: 0.5rem 1rem;       /* spacing inside the strip */
-    padding: 0.5rem 1rem;        /* optional padding */
-    text-align: center;          /* center text inside box */
-    flex-shrink: 0;              /* don’t shrink in flex layout */
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    flex-shrink: 0;
 }
 
-/* Small InfoBox on the right */
 .top-row .info-box {
-    width: 100px;               /* smaller than default InfoBox */
-    padding: 0.25rem;  /* shrink internal padding */
-    margin: 0;         /* optional, remove margin */
+    width: 100px;
+    padding: 0.25rem;
+    margin: 0;
     background-color: transparent;
 }
 
-/* Shrink text inside the top-row InfoBox */
 .top-row .info-box h2 {
-    font-size: 1rem;   /* adjust smaller or larger as needed */
+    font-size: 1rem;
     font-weight: 600;
-    margin: 0;           /* remove default spacing */
-    line-height: 1.2;    /* optional: tighten spacing */
+    margin: 0;
+    line-height: 1.2;
 }
 
-/* Vertical nav container */
 .nav-scrollable {
-    background-color: #555555;  /* slightly lighter gray */
-    min-height: 100vh;           /* full height of sidebar */
+    background-color: #555555;
+    min-height: 100vh;
 }
 
-/* Container for first row: image + text */
 .home-header-top {
     display: flex;
-    align-items: center;  /* vertically center text with image */
-    gap: 2rem;            /* space between image and text */
+    align-items: center;
+    gap: 2rem;
 }
 
-/* InfoBox row */
 .home-header > InfoBox {
-    margin-top: 1rem;      /* space below the first row */
-    width: 250px;          /* adjust box size */
+    margin-top: 1rem;
+    width: 250px;
 }
 
-/* Horizontal row for two InfoBoxes */
 .home-content-row {
     display: flex;
     justify-content: space-between;
@@ -124,7 +113,6 @@ a, .btn-link {
     margin-top: 1rem;
 }
 
-/* Optional: fix InfoBox widths */
 .home-content-row .info-box {
     width: 250px;
     flex-shrink: 0;
@@ -132,39 +120,34 @@ a, .btn-link {
 
 .right-column {
     display: flex;
-    flex-direction: column;  /* stack boxes vertically */
+    flex-direction: column;
     gap: 1rem;
 }
 
-/* Keep both right boxes same width */
 .right-column .info-box {
-    width: 300px;  /* match the previous right box width */
+    width: 300px;
 }
 
-/* Make bottom-right box fill remaining height if needed */
 .bottom-right-box {
-    flex-grow: 1;  /* optional: expands to take available vertical space */
+    flex-grow: 1;
 }
 
-/* Make sidebar link text bigger */
 .nav-scrollable .nav-link {
-    font-size: 1.25rem; /* adjust to whatever size you want */
-    font-weight: 500;   /* optional: make it slightly bolder */
+    font-size: 1.25rem;
+    font-weight: 500;
     display: block;
     background-color: #8E8E8E !important;
     color: #000000 !important;
 }
 
 .nav-scrollable .nav-link.active {
-    background-color: #E36216 !important; /* same as default box color */
+    background-color: #E36216 !important;
 }
 
-/* Hover effect for sidebar links */
 .nav-scrollable .nav-link:hover {
-    background-color: #AC8066 !important;  /* color when you hover over a link */
+    background-color: #AC8066 !important;
 }
 
-/* Home screen */
 .info-box {
     background-color: #8E8E8E;
     color: #000000;
@@ -188,11 +171,6 @@ a, .btn-link {
     color: #FFFFFF;
 }
 
-.home-logo {
-    width: 120px;   /* adjust if needed */
-    height: auto;
-}
-
 .home-text h1 {
     margin: 0;
 }
@@ -201,7 +179,6 @@ a, .btn-link {
     margin-top: 0.5rem;
 }
 
-/* This is for the current section */
 .info-container {
     display: flex;
     gap: 1rem;
