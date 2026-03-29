@@ -1,5 +1,8 @@
 ﻿@page "/current"
 @rendermode InteractiveServer
+@inject HttpClient Http
+@using ProjectClamshell.Models
+@using System.Timers
 
 <PageTitle>Current</PageTitle>
 
@@ -11,28 +14,97 @@
         </div>
 
         <div class="info-box">
-            <h3>Loading...</h3>
+            <h3>@infoValidated</h3>
+
         </div>
     </div>
 
     <div class="info-column">
         <div class="info-box">
-            <h3>Unvalidated</h3>
+            <h3>Signed</h3>
         </div>
 
         <div class="info-box">
-            <h3>Loading...</h3>
+            <h3>@infoSigned</h3>
+
         </div>
     </div>
 
     <div class="info-column">
         <div class="info-box">
-            <h3>Corrupted</h3>
+            <h3>Unsigned/Unvalidated</h3>
         </div>
 
         <div class="info-box">
-            <h3>Loading...</h3>
+            <h3>@infoCorrupted</h3>
+
         </div>
     </div>
 
 </div>
+
+@code {
+    private int infoValidated = 0;
+    private int infoSigned = 0;
+    private int infoCorrupted = 0;
+    private Timer? refreshTimer;
+
+    private List<Message> validatedMessages = new();
+    private List<Message> signedMessages = new();
+    private List<Message> corruptedMessages = new();
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCounts();
+
+        refreshTimer = new Timer(3000);
+        refreshTimer.Elapsed += async (sender, args) =>
+        {
+            await InvokeAsync(async () =>
+            {
+                await LoadCounts();
+                StateHasChanged();
+            });
+        };
+        refreshTimer.AutoReset = true;
+        refreshTimer.Enabled = true;
+    }
+
+    private async Task LoadCounts()
+    {
+        try
+        {
+            // just get counts from backend
+            var validated = await Http.GetFromJsonAsync<List<int>>("http://tcpapi:5000/api/messages/validated") ?? new();
+            infoValidated = (validated.Count > 0) ? validated[0] : 0;
+
+            var signed = await Http.GetFromJsonAsync<List<int>>("http://tcpapi:5000/api/messages/signed") ?? new();
+            infoSigned = (signed.Count > 0) ? signed[0] : 0;
+
+            var unsigned = await Http.GetFromJsonAsync<List<int>>("http://tcpapi:5000/api/messages/unsigned") ?? new();
+            infoCorrupted = (unsigned.Count > 0) ? unsigned[0] : 0;
+
+        }
+        catch
+        {
+            infoValidated = -1;
+            infoSigned = -1;
+            infoCorrupted = -1;
+        }
+
+    }
+
+    public class Message
+    {
+        public int Id { get; set; }
+        public string? Content { get; set; }
+        public DateTime ReceivedAt { get; set; }
+        public string? PGN { get; set; }
+    }
+
+    public void Dispose()
+    {
+        refreshTimer?.Stop();
+        refreshTimer?.Dispose();
+    }
+
+}
