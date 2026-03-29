@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 public interface IMessagesApi
 {
+    
     Task<IActionResult> LoginUser(string login, string password);
     Task<IActionResult> StatusCheck();
     Task<IActionResult> GetAll();
@@ -23,6 +24,21 @@ public class MessagesController : ControllerBase, IMessagesApi
     private readonly Database _db = new Database();
     private readonly string defaultUsername = Environment.GetEnvironmentVariable("DEFAULTUSERNAME") ?? throw new InvalidOperationException("DEFAULTUSERNAME not set");
     private readonly string defaultPassword = Environment.GetEnvironmentVariable("DEFAULTPASSWORD") ?? throw new InvalidOperationException("DEFAULTPASSWORD not set");
+    private static readonly byte[] key = Convert.FromHexString(Environment.GetEnvironmentVariable("XCHACHA20POLY1305_KEY") ?? throw new InvalidOperationException("XCHACHA20POLY1305_KEY not set"));
+    private static readonly byte[] nonce = Convert.FromHexString(Environment.GetEnvironmentVariable("XCHACHA20POLY1305_NONCE") ?? throw new InvalidOperationException("XCHACHA20POLY1305_NONCE not set"));
+    
+    [HttpGet("encryptionStatus")]
+    public async Task<IActionResult> EncryptionStatus()
+    {
+        var keyHex = Convert.ToHexString(key);
+        var nonceHex = Convert.ToHexString(nonce);
+    
+        return Ok(new
+        {
+            key = keyHex[^10..],
+            nonce = nonceHex[^10..]
+        });
+    }
 
     [HttpGet("login/{username}/{password}")]
     public async Task<IActionResult> LoginUser(string username, string password)
