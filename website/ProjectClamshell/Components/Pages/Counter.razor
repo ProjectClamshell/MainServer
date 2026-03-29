@@ -16,7 +16,6 @@
         <div class="info-box">
             <h3>@infoValidated</h3>
 
-
             @if (infoValidated > 0)
             {
                 if(latestvalidated != null)
@@ -117,30 +116,6 @@
         refreshTimer.AutoReset = true;
         refreshTimer.Enabled = true;
     }
-
-    /* private async Task LoadCounts()
-    {
-        try
-        {
-            // just get counts from backend
-            var validated = await Http.GetFromJsonAsync<List<int>>("http://tcpapi:5000/api/messages/validated") ?? new();
-            infoValidated = (validated.Count > 0) ? validated[0] : 0;
-
-            var signed = await Http.GetFromJsonAsync<List<int>>("http://tcpapi:5000/api/messages/signed") ?? new();
-            infoSigned = (signed.Count > 0) ? signed[0] : 0;
-
-            var unsigned = await Http.GetFromJsonAsync<List<int>>("http://tcpapi:5000/api/messages/unsigned") ?? new();
-            infoCorrupted = (unsigned.Count > 0) ? unsigned[0] : 0;
-
-        }
-        catch
-        {
-            infoValidated = -1;
-            infoSigned = -1;
-            infoCorrupted = -1;
-        }
-
-    } */
 
     private async Task LoadCounts()
     {

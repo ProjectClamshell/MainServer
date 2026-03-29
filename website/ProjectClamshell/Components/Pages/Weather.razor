@@ -1,11 +1,62 @@
 ﻿@page "/history"
 @attribute [StreamRendering]
+@inject HttpClient Http
+@using ProjectClamshell.Models
 
 <PageTitle>History</PageTitle>
 
-<div class="info-box">
-    <div class="info-box-horizontal">
+<div class="history">
+    <InfoBox>
         <h3>History</h3>
-        <p>Loading....</p>
-    </div>
+
+        @if(historyMessages.Count == 0)
+        {
+            <p>Loading...</p>
+        }
+        else
+        {
+            <div class="history-list">
+            @foreach (var message in historyMessages)
+            {
+                <div class="history-list">
+                    <strong>Id:</strong> @message.Id &emsp;
+                    <strong>Content:</strong> @message.Content &emsp;
+                    <strong>Received At:</strong> @message.ReceivedAt &emsp;
+                    <strong>RGN:</strong> @message.PGN
+                </div>
+            }
+            </div>
+        }
+    </InfoBox>
 </div>
+
+@code {
+    private List<Message> historyMessages = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadHistory();
+    }
+
+    private async Task LoadHistory()
+    {
+        try
+        {
+            var messages = await Http.GetFromJsonAsync<List<Message>>("http://tcpapi:5000/api/messages/validated") ?? new();
+
+            historyMessages = messages.OrderByDescending(m => m.ReceivedAt).Take(21).ToList();
+        }
+        catch
+        {
+            historyMessages = new();
+        }
+    }
+
+    public class Message
+    {
+        public int Id { get; set; }
+        public string? Content { get; set; }
+        public DateTime ReceivedAt { get; set; }
+        public string? PGN { get; set; }
+    }
+}
