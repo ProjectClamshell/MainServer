@@ -94,6 +94,8 @@
 
     private List<Message> validatedMessages = new();
     private List<Message> signedMessages = new();
+    private List<Message> unvalidatedMessages = new();
+    private List<Message> unsignedMessages = new();
     private List<Message> corruptedMessages = new();
 
     private Message? latestvalidated;
@@ -123,7 +125,11 @@
         {
             validatedMessages = await Http.GetFromJsonAsync<List<Message>>("http://tcpapi:5000/api/messages/validated") ?? new();
             signedMessages = await Http.GetFromJsonAsync<List<Message>>("http://tcpapi:5000/api/messages/signed") ?? new();
-            corruptedMessages = await Http.GetFromJsonAsync<List<Message>>("http://tcpapi:5000/api/messages/unsigned") ?? new();
+            unsignedMessages = await Http.GetFromJsonAsync<List<Message>>("http://tcpapi:5000/api/messages/unsigned") ?? new();
+            unvalidatedMessages = await Http.GetFromJsonAsync<List<Message>>("http://tcpapi:5000/api/messages/unvalidated") ?? new();
+            corruptedMessages = new List<Message>();
+            corruptedMessages.AddRange(unsignedMessages);
+            corruptedMessages.AddRange(unvalidatedMessages);
 
             infoValidated = validatedMessages.Count;
             infoSigned = signedMessages.Count;
