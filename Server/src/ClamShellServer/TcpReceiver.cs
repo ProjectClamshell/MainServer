@@ -94,7 +94,7 @@ public class TcpListenerService : BackgroundService
                 }
                 catch (Exception e)
                 {
-                    await _db.SaveMessageAsync(null, false, false, null);
+                    await _db.SaveMessageAsync(Convert.ToHexString(Encoding.UTF8.GetBytes("Error")), signedMessage, validatedMessage, Convert.ToHexString(Encoding.UTF8.GetBytes("Error"))); 
                     continue;
                 }
 
