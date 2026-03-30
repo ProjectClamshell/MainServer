@@ -1,8 +1,8 @@
 CREATE TABLE messages (
     id SERIAL PRIMARY KEY,
-    content TEXT NOT NULL,
-    receivedAt TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    content TEXT,
+    receivedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     signed BOOLEAN DEFAULT FALSE,
     validated BOOLEAN DEFAULT FALSE,
-    pgn TEXT NOT NULL
+    pgn TEXT
 );

@@ -87,7 +87,16 @@ public class TcpListenerService : BackgroundService
             while ((bytesRead = await stream.ReadAsync(buffer, ct)) > 0)
             {
                 var data = buffer[..bytesRead];
-                byte[] decryptedData = Decryptor.decrypt(data);
+                byte[] decryptedData;
+                try
+                {
+                    decryptedData = Decryptor.decrypt(data);
+                }
+                catch (Exception e)
+                {
+                    await _db.SaveMessageAsync(null, false, false, null);
+                    continue;
+                }
 
                 byte[] pgn = decryptedData.AsSpan(0, 3).ToArray();
                 byte[] payload = decryptedData.AsSpan(3, decryptedData.Length - 3 - 8).ToArray();

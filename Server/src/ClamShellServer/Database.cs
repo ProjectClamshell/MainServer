@@ -79,7 +79,7 @@ public class Database : DatabaseConnection
         return 0;
     }
 
-    public async Task SaveMessageAsync(string content, bool signed, bool validated, string pgn)
+    public async Task SaveMessageAsync(string? content, bool signed, bool validated, string? pgn)
     {
         var now = DateTime.UtcNow; //current timestamp
         await using var connection = new NpgsqlConnection(_connectionString);
