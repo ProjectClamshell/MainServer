@@ -9,7 +9,6 @@ builder.Services.AddRazorComponents()
 builder.Services.AddHttpClient();
 builder.Services.AddDataProtection()
     .SetApplicationName("ClamshellApp");
-    // Removed PersistKeysToFileSystem — ephemeral keys, no stale key mismatch
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -36,7 +35,7 @@ if (!app.Environment.IsDevelopment())
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseAntiforgery(); // Required by Blazor — must stay
+app.UseAntiforgery();
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
