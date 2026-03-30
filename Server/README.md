@@ -1,308 +1,58 @@
-# Messages API
-
-A REST API for retrieving and managing messages, including signed/unsigned and validated/unvalidated data.
 
 ---
 
-## Base URL
+# Main Server
 
-```
-http://<host>:<port>/api/messages
-```
-
-Replace `<host>` and `<port>` with your server configuration.
+This is the main server for coordinating encrypted messages for the **Clamshell Project**. It consists of three primary components: the database, the API, and the receiver. Together, they manage message storage, retrieval, validation, and display.
 
 ---
 
-## Endpoints
+## Database
 
-### 1. Login
+The database runs in a **PostgreSQL Docker container** and stores all received messages in a single table defined in `database/init.sql`. Each entry includes:
 
-**GET** `/login/{username}/{password}`
-**Description:** Validate user login.
+* The **message content** and its **PGN** (Parameter Group Number)
+* A **timestamp** indicating when the message was received
+* Flags for **signed** and **validated** status to ensure authenticity
+* Optional metadata, such as message type or source
 
-```bash
-curl -X GET "http://localhost:5000/api/messages/login/admin/password123"
-```
-
-**Response:**
-
-```json
-true
-```
-
-**Example (invalid login):**
-
-```bash
-curl -X GET "http://localhost:5000/api/messages/login/admin/wrongpass"
-```
-
-```json
-false
-```
+The database ensures that all messages can be **verified** cryptographically and supports queries for analytics or live monitoring. Regular backups and indexing are recommended to maintain performance as message volume grows.
 
 ---
 
-### 2. Status Check
+## API
 
-**GET** `/status`
-**Description:** Check if the service is live.
+The API provides RESTful endpoints for retrieving, filtering, and managing messages stored in the database. It interacts with the web interface to present information visually and programmatically.
 
-```bash
-curl -X GET "http://localhost:5000/api/messages/status"
-```
+**Endpoints include:**
 
-**Response:**
+* **Login** – `GET /login/{username}/{password}`: Validates user credentials
+* **Status Check** – `GET /status`: Checks if the service is live
+* **Get All Messages** – `GET /all`: Retrieves every stored message
+* **Get Total Message Count** – `GET /total`: Returns the total number of messages
+* **Get New Messages Since Time** – `GET /new/{time}`: Retrieves messages received after a specific timestamp
+* **Get Messages by PGN** – `GET /by-pgn/{pgn}`: Filters messages by PGN
+* **Get Messages by PGN Since Time** – `GET /by-pgn/{pgn}/since/{time}`: Filters messages by PGN and timestamp
+* **Get Signed Messages** – `GET /signed`: Returns only messages that are signed
+* **Get Unsigned Messages** – `GET /unsigned`: Returns messages without a valid signature
+* **Get Validated Messages** – `GET /validated`: Returns messages that have passed validation checks
+* **Get Unvalidated Messages** – `GET /unvalidated`: Returns messages pending validation
+* **Encryption Status** – `GET /encryptionStatus`: Returns partial key and nonce for debugging
+* **Reset Table (Testing Only)** – `GET /Reset`: Clears the messages table for testing
 
-```json
-true
-```
-
----
-
-### 3. Get All Messages
-
-**GET** `/all`
-
-```bash
-curl -X GET "http://localhost:5000/api/messages/all"
-```
-
-**Example Response:**
-
-```json
-[
-  {
-    "id": 1,
-    "pgn": "01F112",
-    "data": "ABC123",
-    "timestamp": 1710000000,
-    "signed": true,
-    "validated": true
-  }
-]
-```
+The API is **stateless** and does not require persistent sessions. Responses are returned in JSON format, and all endpoints return HTTP `200 OK`. Authentication is lightweight, primarily for administrative access.
 
 ---
 
-### 4. Get Total Message Count
+## The Receiver
 
-**GET** `/total`
+The **receiver** is responsible for accepting encrypted TCP packets from nodes. It is an **asynchronous process** capable of handling multiple simultaneous connections. Its core responsibilities include:
 
-```bash
-curl -X GET "http://localhost:5000/api/messages/total"
-```
+1. Decrypting messages using XChaCha20-Poly1305 encryption
+2. Validating signatures to ensure authenticity
+3. Storing messages in the database after verification
+4. logging errors or invalid messages for monitoring
 
-**Example Response:**
-
-```json
-42
-```
-
----
-
-### 5. Get New Messages Since Time
-
-**GET** `/new/{time}`
-
-```bash
-curl -X GET "http://localhost:5000/api/messages/new/60"
-```
-
-**Example Response:**
-
-```json
-[
-  {
-    "id": 5,
-    "pgn": "01F113",
-    "timestamp": 1710000060
-  }
-]
-```
-
----
-
-### 6. Get Messages by PGN
-
-**GET** `/by-pgn/{pgn}`
-
-```bash
-curl -X GET "http://localhost:5000/api/messages/by-pgn/01F112"
-```
-
-**Example Response:**
-
-```json
-[
-  {
-    "id": 1,
-    "pgn": "01F112",
-    "data": "ABC123"
-  }
-]
-```
-
----
-
-### 7. Get Messages by PGN Since Time
-
-**GET** `/by-pgn/{pgn}/since/{time}`
-
-```bash
-curl -X GET "http://localhost:5000/api/messages/by-pgn/01F112/since/60"
-```
-
-**Example Response:**
-
-```json
-[
-  {
-    "id": 6,
-    "pgn": "01F112",
-    "timestamp": 1710000100
-  }
-]
-```
-
----
-
-### 8. Get Signed Messages
-
-**GET** `/signed`
-
-```bash
-curl -X GET "http://localhost:5000/api/messages/signed"
-```
-
-**Example Response:**
-
-```json
-[
-  {
-    "id": 2,
-    "signed": true
-  }
-]
-```
-
----
-
-### 9. Get Unsigned Messages
-
-**GET** `/unsigned`
-
-```bash
-curl -X GET "http://localhost:5000/api/messages/unsigned"
-```
-
-**Example Response:**
-
-```json
-[
-  {
-    "id": 3,
-    "signed": false
-  }
-]
-```
-
----
-
-### 10. Get Validated Messages
-
-**GET** `/validated`
-
-```bash
-curl -X GET "http://localhost:5000/api/messages/validated"
-```
-
-**Example Response:**
-
-```json
-[
-  {
-    "id": 2,
-    "validated": true
-  }
-]
-```
-
----
-
-### 11. Get Unvalidated Messages
-
-**GET** `/unvalidated`
-
-```bash
-curl -X GET "http://localhost:5000/api/messages/unvalidated"
-```
-
-**Example Response:**
-
-```json
-[
-  {
-    "id": 4,
-    "validated": false
-  }
-]
-```
-
----
-
-### 12. Encryption Status
-
-**GET** `/encryptionStatus`
-**Description:** Returns the last 10 characters of the key and nonce (hex).
-
-```bash
-curl -X GET "http://localhost:5000/api/messages/encryptionStatus"
-```
-
-**Example Response:**
-
-```json
-{
-  "key": "A1B2C3D4E5",
-  "nonce": "F6G7H8I9J0"
-}
-```
-
----
-
-### 13. Reset Table (Testing Only)
-
-**GET** `/Reset`
-
-```bash
-curl -X GET "http://localhost:5000/api/messages/Reset"
-```
-
-**Example Response:**
-
-```json
-true
-```
-
----
-
-## Environment Variables
-
-Required:
-
-* `DEFAULTUSERNAME`
-* `DEFAULTPASSWORD`
-* `XCHACHA20POLY1305_KEY` (hex string)
-* `XCHACHA20POLY1305_NONCE` (hex string)
-
----
-
-## Notes
-
-* All responses return HTTP `200 OK`
-* Authentication is stateless
-* Encryption values are partially exposed for debugging only
-* Reset endpoint should not be enabled in production
+This design allows nodes to push messages in real-time while ensuring that all stored data is secure and trustworthy. Scalability is achieved through async handling and optimized database writes.
 
 ---

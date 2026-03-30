@@ -1,10 +1,10 @@
 import requests
 
-BASE_URL = "http://localhost:5000/api/messages"  # change host/port if needed
+BASE_URL = "http://localhost:5000/api/messages"
 USERNAME = "admin"
 PASSWORD = "password123"
 TEST_PGN = "01F112"
-TEST_TIME = 60  # seconds
+TEST_TIME = 60
 
 def test_endpoint(description, url):
     print(f"\n=== {description} ===")
